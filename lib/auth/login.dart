@@ -26,7 +26,7 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               Container(
                 decoration: BoxDecoration(
-                    color: Colors.blue,
+                    color: Color.fromARGB(255, 0, 74, 135),
                     borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(40),
                         bottomRight: Radius.circular(40))),

@@ -16,7 +16,7 @@ class _TestState extends State<Test> {
         body: SingleChildScrollView(
           child: Container(
             margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-            decoration: BoxDecoration(color: Colors.blue),
+            decoration: BoxDecoration(color: Color.fromARGB(255, 0, 67, 123)),
             child: Column(
               children: [
                 SizedBox(

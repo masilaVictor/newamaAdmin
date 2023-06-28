@@ -15,7 +15,7 @@ class _TestState extends State<Test> {
       child: Scaffold(
         body: SingleChildScrollView(
           child: Container(
-            margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+            margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
             decoration: BoxDecoration(color: Color.fromARGB(255, 0, 67, 123)),
             child: Column(
               children: [
@@ -37,7 +37,7 @@ class _TestState extends State<Test> {
                           topLeft: Radius.circular(40))),
                   child: SizedBox(
                     width: double.infinity,
-                    height: 600,
+                    height: 450,
                     child: Column(
                       children: [
                         Image.asset('assets/images/rider.png'),

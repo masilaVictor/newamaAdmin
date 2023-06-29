@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:newama2/general/order.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -14,6 +15,7 @@ class _DashboardState extends State<Dashboard> {
   Query dbRef = FirebaseDatabase.instance.ref().child('Orders');
   @override
   Widget build(BuildContext context) {
+    int check = 0;
     var dt2 = DateTime.fromMillisecondsSinceEpoch(
         DateTime.now().millisecondsSinceEpoch);
     var TAS2 = DateFormat('dd/MM/yyyy').format(dt2);
@@ -194,9 +196,9 @@ class _DashboardState extends State<Dashboard> {
                                   height: 20,
                                 ),
                                 
-                                    Expanded(
+                                  Expanded(
                                       
-                                      child: FirebaseAnimatedList(
+                                    child: FirebaseAnimatedList(
                                          query: dbRef.orderByChild('status').equalTo('Pending'),
                                                         itemBuilder: (BuildContext context, DataSnapshot snapshot,
                                                           Animation<double> animation, int index) {
@@ -210,6 +212,115 @@ class _DashboardState extends State<Dashboard> {
                                                           var dt3 = DateTime.fromMillisecondsSinceEpoch(
                                                               int.parse(orders['postTime']));
                                                           var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
+                                                          check = check +1;
+                                                          if (TAS3.compareTo(TAS2) == 0){
+                                                            return GestureDetector(
+                                                              onTap: (){
+                                                                Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPage(orderno: snapshot.key as String)));
+                                                              },
+                                                              child: Column(
+                                                                children: [
+                                                                  Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                    children: [
+                                                                      Text('${snapshot.key}'),
+                                                                      Text('${orders['outlet']}'),
+                                                                      Text('${orders['status']}'),
+                                                                      Text('$TAS3'),
+                                                                      
+                                    
+                                                                    ],
+                                                                  ),
+                                                                  
+                                                                  const SizedBox(
+                                                                    height: 13,
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            );
+                                                          }
+                                                          else{
+                                                            return Container();
+                                                          }
+                                                            }
+                                                                                   
+                                                                    ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: (){},
+                                      child: Row(
+                                        children: [
+                                          Text('View All', style: TextStyle(color: Colors.red),),
+                                          Icon(Icons.arrow_forward_ios, size: 10,color: Colors.red,)
+
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+
+                                    
+                                    
+                              ],
+                            ),
+
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                         Row(
+                          children: [
+                            Text('Orders in Dispatch', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Color.fromARGB(49, 64, 255, 245),
+                          ),
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 140,
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Order No.', style: TextStyle(fontWeight: FontWeight.w500),),
+                                    Text('Store', style: TextStyle(fontWeight: FontWeight.w500)),
+                                    Text('Status',style: TextStyle(fontWeight: FontWeight.w500)),
+                                    Text('Date',style: TextStyle(fontWeight: FontWeight.w500))
+
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                
+                                
+                                  Expanded(
+                                      
+                                    child: FirebaseAnimatedList(
+                                         query: dbRef.orderByChild('status').equalTo('Processing'),
+                                                        itemBuilder: (BuildContext context, DataSnapshot snapshot,
+                                                          Animation<double> animation, int index) {
+                                                          Map orders = snapshot.value as Map;
+                                                          orders['key'] = snapshot.key;
+                                    
+                                                          // var dt3 = DateTime.fromMillisecondsSinceEpoch(
+                                                          // orders['postTime'].millisecondsSinceEpoch);
+                                                          // var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
+                                                      
+                                                          var dt3 = DateTime.fromMillisecondsSinceEpoch(
+                                                              int.parse(orders['postTime']));
+                                                          var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
+                                                          check = check +1;
                                                           if (TAS3.compareTo(TAS2) == 0){
                                                             return GestureDetector(
                                                               onTap: (){},
@@ -225,9 +336,11 @@ class _DashboardState extends State<Dashboard> {
                                                                       
                                     
                                                                     ],
+                                                                    
                                                                   ),
+                                                                  
                                                                   const SizedBox(
-                                                                    height: 10,
+                                                                    height: 13,
                                                                   )
                                                                 ],
                                                               ),
@@ -244,6 +357,7 @@ class _DashboardState extends State<Dashboard> {
                                                                       
                                                                     ),
                                     ),
+                                    
                                     GestureDetector(
                                       onTap: (){},
                                       child: Row(
@@ -253,13 +367,131 @@ class _DashboardState extends State<Dashboard> {
 
                                         ],
                                       ),
-                                    )
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+
+                                    
+                                    
+                              ],
+                            ),
+
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                             Row(
+                          children: [
+                            Text('Orders on Transit', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Color.fromARGB(48, 64, 115, 255),
+                          ),
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 140,
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Order No.', style: TextStyle(fontWeight: FontWeight.w500),),
+                                    Text('Store', style: TextStyle(fontWeight: FontWeight.w500)),
+                                    Text('Status',style: TextStyle(fontWeight: FontWeight.w500)),
+                                    Text('Date',style: TextStyle(fontWeight: FontWeight.w500))
+
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                
+                                
+                                  Expanded(
+                                      
+                                    child: FirebaseAnimatedList(
+                                         query: dbRef.orderByChild('status').equalTo('Transit'),
+                                                        itemBuilder: (BuildContext context, DataSnapshot snapshot,
+                                                          Animation<double> animation, int index) {
+                                                          Map orders = snapshot.value as Map;
+                                                          orders['key'] = snapshot.key;
+                                    
+                                                          // var dt3 = DateTime.fromMillisecondsSinceEpoch(
+                                                          // orders['postTime'].millisecondsSinceEpoch);
+                                                          // var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
+                                                      
+                                                          var dt3 = DateTime.fromMillisecondsSinceEpoch(
+                                                              int.parse(orders['postTime']));
+                                                          var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
+                                                          check = check +1;
+                                                          if (TAS3.compareTo(TAS2) == 0){
+                                                            return GestureDetector(
+                                                              onTap: (){},
+                                                              child: Column(
+                                                                children: [
+                                                                  Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                    children: [
+                                                                      Text('${snapshot.key}'),
+                                                                      Text('${orders['outlet']}'),
+                                                                      Text('${orders['status']}'),
+                                                                      Text('$TAS3'),          
+                                    
+                                                                    ],
+                                                                    
+                                                                  ),
+                                                                  
+                                                                  const SizedBox(
+                                                                    height: 13,
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            );
+                                                          }
+                                                          else{
+                                                            return Container();
+                                                          }
+                                                            }
+                                      
+                                    
+                                      
+                                      
+                                                                      
+                                                                    ),
+                                    ),
+                                    
+                                    GestureDetector(
+                                      onTap: (){},
+                                      child: Row(
+                                        children: [
+                                          Text('View All', style: TextStyle(color: Colors.red),),
+                                          Icon(Icons.arrow_forward_ios, size: 10,color: Colors.red,)
+
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+
+                                    
                                     
                               ],
                             ),
 
                           ),
                         )
+
+                        //Orders in Transit
                       ],
                       
                     ),

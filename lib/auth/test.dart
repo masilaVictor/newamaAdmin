@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:newama2/auth/admin.dart';
 import 'package:newama2/auth/login.dart';
 
 class Test extends StatefulWidget {
@@ -37,7 +38,7 @@ class _TestState extends State<Test> {
                           topLeft: Radius.circular(40))),
                   child: SizedBox(
                     width: double.infinity,
-                    height: 450,
+                    height: 600,
                     child: Column(
                       children: [
                         Image.asset('assets/images/rider.png'),
@@ -48,8 +49,11 @@ class _TestState extends State<Test> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               ElevatedButton(
+                                
                                 style: ElevatedButton.styleFrom(
-                                    primary: Colors.blue),
+                                    primary: Colors.blue,
+                                    
+                                    ),
                                 onPressed: () {
                                   Navigator.push(
                                       context,
@@ -63,7 +67,9 @@ class _TestState extends State<Test> {
                                 ),
                               ),
                               ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminLogin()));
+                                  },
                                   child: Text('Admin',
                                       style: TextStyle(fontSize: 22)))
                             ],

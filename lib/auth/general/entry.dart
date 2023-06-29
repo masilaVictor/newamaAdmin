@@ -305,8 +305,44 @@ class _EntriesState extends State<Entries> {
                                     );
                                   });
                             }
+                            else{
+                              insertOrder(__orderId.text, __productNameController.text, __priceController.text, 
+                              __productQuantityController.text);
+                              insertCustomerDetails(__customerNameController.text, __customerContacts.text, __townController.text, 
+                              __customerStreet.text);
+
+                                  changeOrderStatus(
+                                'Pending',
+                                store,
+                                DateTime.now()
+                                    .millisecondsSinceEpoch
+                                    .toString());
+
+                                showDialog(context: context, builder: (context){
+                                  return AlertDialog(
+                                    title: Text('Successful Entry'),
+                                    content: Text('Order ${__orderId.text} was successfully entered'),
+                                    actions: [
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          primary: Colors.blue
+                                        ),
+                                        onPressed: (){
+                                        clearText();
+                                        Navigator.pop(context);
+
+                                      }, 
+                                      child: Text('Next Order')),
+                                      ElevatedButton(onPressed: (){
+                                        FirebaseAuth.instance.signOut();
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => const Test()));
+                                      }, child: Text('Exit'))
+                                    ],
+                                  );
+                                });  
+                            }
                           },
-                          child: Text(
+                          child: const Text(
                             'Submit',
                             style: TextStyle(fontSize: 22),
                           )),
@@ -320,8 +356,8 @@ class _EntriesState extends State<Entries> {
                                 MaterialPageRoute(
                                     builder: (context) => Test()));
                           },
-                          child: Text(
-                            'Logout',
+                          child: const Text(
+                            'Exit',
                             style: TextStyle(fontSize: 22),
                           ))
                     ],
@@ -333,5 +369,63 @@ class _EntriesState extends State<Entries> {
         ),
       ),
     );
+  }
+
+
+    void changeOrderStatus(String status, String outlet, var postTime) {
+    dataseRef
+        .child("Orders/${__orderId.text}")
+        .update({"status": status, "outlet": outlet, "postTime": postTime});
+  }
+
+  void insertOrder(
+    String orderId,
+    String itemName,
+    String itemPrice,
+    String itemQuantity,
+    
+  ) {
+    dataseRef.child("Orders").child("${__orderId.text}/items").push().set({
+      'orderId': orderId,
+      'Item': itemName,
+      'Price': itemPrice,
+      'Quantity': itemQuantity,
+      
+    });
+  }
+
+  void insertCustomerDetails(
+    String customerName,
+    String customerNumber,
+    String area,
+    String street,
+  ) {
+    dataseRef
+        .child("Orders")
+        .child("${__orderId.text}/customerDetails")
+        .push()
+        .set({
+      'Customer': customerName,
+      'Contacts': customerNumber,
+      'Area': area,
+      'Landmark': street,
+    });
+
+    dataseRef.child("Orders").child("${__orderId.text}").update({
+      'Customer': customerName,
+      'Contacts': customerNumber,
+      'Area': area,
+      'Landmark': street,
+    });
+  }
+  void clearText(){
+    __productNameController.clear();
+    __orderId.clear();
+    __productQuantityController.clear();
+    __priceController.clear();
+    __customerNameController.clear();
+    __customerContacts.clear();
+    __townController.clear();
+    __customerStreet.clear();
   }
 }

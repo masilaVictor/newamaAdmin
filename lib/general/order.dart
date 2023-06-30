@@ -24,7 +24,19 @@ class _OrderPageState extends State<OrderPage> {
           child: Container(
             child: Column(
               children: [
-                
+                Image.asset('assets/images/cart.png'),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(197, 251, 105, 95),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20)),
+                  ),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 400,
+                  ),
+                )
               ],
             ),
           ),

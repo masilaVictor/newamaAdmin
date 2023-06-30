@@ -4,24 +4,26 @@ import 'package:flutter/material.dart';
 import 'package:newama2/general/dashboard.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 
-class OrderPage extends StatefulWidget {
+class DispatchPage extends StatefulWidget {
   String orderno;
   String outlet;
   String status;
-  OrderPage({super.key, required this.orderno, required this.outlet, required this.status});
+  String rider;
+
+  DispatchPage({super.key, required String this.orderno, required this.outlet, required this.status, required this.rider});
 
   @override
-  State<OrderPage> createState() => _OrderPageState(orderno, outlet, status);
+  State<DispatchPage> createState() => _DispatchPageState(orderno,outlet,status,rider);
 }
 
-class _OrderPageState extends State<OrderPage> {
+class _DispatchPageState extends State<DispatchPage> {
   String orderno;
   String outlet;
   String status;
-  List<dynamic> riders = [];
-
+  String rider;
   String? riderId;
-  _OrderPageState(this.orderno, this.outlet, this.status);
+  List<dynamic> riders = [];
+  _DispatchPageState(this.orderno, this.outlet, this.status, this.rider);
   final dataseRef = FirebaseDatabase.instance.ref();
   @override
   void initState() {
@@ -32,8 +34,6 @@ class _OrderPageState extends State<OrderPage> {
     this.riders.add({"id": "alphonce@gmail.com", "label": "Alphonce Mutuku"});
     this.riders.add({"id": "wilfredkeya@gmail.com", "label": "Wilfred Keya"});
   }
-  
-  
 
   @override
   Widget build(BuildContext context) {
@@ -152,6 +152,9 @@ class _OrderPageState extends State<OrderPage> {
                                      
                                     ],
                                   ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),Text('Rider: ${rider}', style: TextStyle(color: Colors.white,fontSize: 15, fontWeight: FontWeight.w500),),
                                      
                                 ],
                               );
@@ -168,118 +171,53 @@ class _OrderPageState extends State<OrderPage> {
                 const SizedBox(
                   height: 20,
                 ),
-                Row(
-                  children: [
-                   Container(
-                child: SizedBox(
-                  width: 250,
-                  child: FormHelper.dropDownWidget(
-                    context,
-                    "Select Rider",
-                    this.riderId,
-                    this.riders,
-                    (onChangedVal) {
-                      this.riderId = onChangedVal;
-                    },
-                    (onValidateVal) {
-                      return null;
-                    },
-                    borderColor: Colors.red,
-                    borderFocusColor: Colors.red,
-                    borderRadius: 10,
-                    optionValue: "id",
-                    optionLabel: "label",
-                  ),
-                ),
-              ),
+                
               ElevatedButton(
                   onPressed: () {
-                    if(riderId == null || riderId == ''){
-                      showDialog(context:context,builder: (context){
-                        return AlertDialog(
-                          title: Text('Error'),
-                          content: Text('Please Select A Rider to Assign'),
-                          actions: [
-                            ElevatedButton(onPressed: (){
-                              Navigator.pop(context);
-                            }, child: Text('Close'))
-                          ],
-                        );
-
-                      });
-                    }
-                    assignRider(orderno, riderId!, 'Pending');
+                     updateDispatch('Transit',
+                          DateTime.now().millisecondsSinceEpoch.toString());
+                      updateAssignment('Dispatched');
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Dispatch successful'),
+                              content: Text(
+                                  'Order ${orderno} has been dispatched and is in Transit Now!'),
+                              actions: [
+                                ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const Dashboard()));
+                                    },
+                                    child: Text('Back'))
+                              ],
+                            );
+                          });
+                    
                   },
-                  child: const Text('Assign Rider'))
+                  child: const Text('Dispatch Order'))
                   ],
-                )
-              ],
+                
+              
             ),
           ),
         ),
       ),
     );
   }
-  void changeOrderStatus(String status, var assTime) {
+
+   void updateDispatch(String status, var dispatchTime) {
     dataseRef
         .child("Orders/${orderno}")
-        .update({"status": status, "AssignedTime": assTime});
+        .update({"status": status, "DispatchTime": dispatchTime});
   }
 
-  void addRiderMail(String riderEmail, orderNo, status, assignedTime) {
-    dataseRef.child("Assignments").child("${orderno}").update(
-        {"RiderMail": riderEmail, "OrderNumber": orderNo, "status": status, 'Time':assignedTime});
-    dataseRef
-        .child("Orders")
-        .child("${orderno}")
-        .update({"RiderMail": riderEmail});
+  void updateAssignment(String status) {
+    dataseRef.child("Assignments/${orderno}").update({"status": status});
   }
-
-  void assignRider(String orderNumber, String rider, String status) {
-    dataseRef.child("Assignments").child("${orderno}").push().set({
-      "OrderNumber": orderNumber,
-      "Rider": rider,
-      "status": status,
-      
-    }).then((value) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('Assignment Successful'),
-              content: Text('Notification sent to ${riderId}'),
-              actions: [
-                ElevatedButton(
-                    onPressed: () {
-                      addRiderMail(riderId as String, orderno, "Pending",DateTime.now().millisecondsSinceEpoch.toString());
-                      changeOrderStatus('Processing',
-                          DateTime.now().millisecondsSinceEpoch.toString());
-
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Dashboard()));
-                    },
-                    child: const Text('Close'))
-              ],
-            );
-          });
-    }).onError((error, stackTrace) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('Something Went Wrong'),
-              content: Text('Confirm the order details are correct'),
-              actions: [
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Back'))
-              ],
-            );
-          });
-    });
+ 
   }
-}

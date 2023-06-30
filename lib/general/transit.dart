@@ -1,39 +1,29 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:newama2/general/dashboard.dart';
-import 'package:snippet_coder_utils/FormHelper.dart';
+import 'package:newama2/general/dispatch.dart';
+import 'package:newama2/general/order.dart';
 
-class OrderPage extends StatefulWidget {
+class TransitPage extends StatefulWidget {
   String orderno;
   String outlet;
   String status;
-  OrderPage({super.key, required this.orderno, required this.outlet, required this.status});
+  String rider;
+  TransitPage({super.key, required this.orderno , required this.outlet, required this.status, required this.rider});
 
   @override
-  State<OrderPage> createState() => _OrderPageState(orderno, outlet, status);
+  State<TransitPage> createState() => _TransitPageState(orderno, outlet, status, rider);
 }
 
-class _OrderPageState extends State<OrderPage> {
+class _TransitPageState extends State<TransitPage> {
   String orderno;
   String outlet;
   String status;
-  List<dynamic> riders = [];
-
-  String? riderId;
-  _OrderPageState(this.orderno, this.outlet, this.status);
+  String rider;
   final dataseRef = FirebaseDatabase.instance.ref();
-  @override
-  void initState() {
-    super.initState();
-    this.riders.add({"id": "philipkip@gmail.com", "label": "Philip Kip"});
-    this.riders.add({"id": "fredrick@gmail.com", "label": "Fredrick"});
-    this.riders.add({"id": "johnkamau@gmail.com", "label": "John Kamau"});
-    this.riders.add({"id": "alphonce@gmail.com", "label": "Alphonce Mutuku"});
-    this.riders.add({"id": "wilfredkeya@gmail.com", "label": "Wilfred Keya"});
-  }
-  
-  
+  _TransitPageState(this.orderno, this.outlet, this.status, this.rider);
 
   @override
   Widget build(BuildContext context) {
@@ -152,6 +142,9 @@ class _OrderPageState extends State<OrderPage> {
                                      
                                     ],
                                   ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),Text('Rider: ${rider}', style: TextStyle(color: Colors.white,fontSize: 15, fontWeight: FontWeight.w500),),
                                      
                                 ],
                               );
@@ -168,118 +161,52 @@ class _OrderPageState extends State<OrderPage> {
                 const SizedBox(
                   height: 20,
                 ),
-                Row(
-                  children: [
-                   Container(
-                child: SizedBox(
-                  width: 250,
-                  child: FormHelper.dropDownWidget(
-                    context,
-                    "Select Rider",
-                    this.riderId,
-                    this.riders,
-                    (onChangedVal) {
-                      this.riderId = onChangedVal;
-                    },
-                    (onValidateVal) {
-                      return null;
-                    },
-                    borderColor: Colors.red,
-                    borderFocusColor: Colors.red,
-                    borderRadius: 10,
-                    optionValue: "id",
-                    optionLabel: "label",
-                  ),
-                ),
-              ),
+                
               ElevatedButton(
                   onPressed: () {
-                    if(riderId == null || riderId == ''){
-                      showDialog(context:context,builder: (context){
-                        return AlertDialog(
-                          title: Text('Error'),
-                          content: Text('Please Select A Rider to Assign'),
-                          actions: [
-                            ElevatedButton(onPressed: (){
-                              Navigator.pop(context);
-                            }, child: Text('Close'))
-                          ],
-                        );
-
-                      });
-                    }
-                    assignRider(orderno, riderId!, 'Pending');
+                     updateDispatch('Cancelled',
+                          DateTime.now().millisecondsSinceEpoch.toString());
+                      updateAssignment('Cancelled');
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Order Cancelled'),
+                              content: Text(
+                                  'Order ${orderno} has been Cancelled!'),
+                              actions: [
+                                ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const Dashboard()));
+                                    },
+                                    child: Text('Back'))
+                              ],
+                            );
+                          });
+                    
                   },
-                  child: const Text('Assign Rider'))
+                  child: const Text('Cancel Order'))
                   ],
-                )
-              ],
+                
+              
             ),
           ),
         ),
       ),
     );
   }
-  void changeOrderStatus(String status, var assTime) {
+    void updateDispatch(String status, var dispatchTime) {
     dataseRef
         .child("Orders/${orderno}")
-        .update({"status": status, "AssignedTime": assTime});
+        .update({"status": status, "CancelledTime": dispatchTime});
   }
 
-  void addRiderMail(String riderEmail, orderNo, status, assignedTime) {
-    dataseRef.child("Assignments").child("${orderno}").update(
-        {"RiderMail": riderEmail, "OrderNumber": orderNo, "status": status, 'Time':assignedTime});
-    dataseRef
-        .child("Orders")
-        .child("${orderno}")
-        .update({"RiderMail": riderEmail});
+  void updateAssignment(String status) {
+    dataseRef.child("Assignments/${orderno}").update({"status": status});
   }
-
-  void assignRider(String orderNumber, String rider, String status) {
-    dataseRef.child("Assignments").child("${orderno}").push().set({
-      "OrderNumber": orderNumber,
-      "Rider": rider,
-      "status": status,
-      
-    }).then((value) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('Assignment Successful'),
-              content: Text('Notification sent to ${riderId}'),
-              actions: [
-                ElevatedButton(
-                    onPressed: () {
-                      addRiderMail(riderId as String, orderno, "Pending",DateTime.now().millisecondsSinceEpoch.toString());
-                      changeOrderStatus('Processing',
-                          DateTime.now().millisecondsSinceEpoch.toString());
-
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Dashboard()));
-                    },
-                    child: const Text('Close'))
-              ],
-            );
-          });
-    }).onError((error, stackTrace) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('Something Went Wrong'),
-              content: Text('Confirm the order details are correct'),
-              actions: [
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Back'))
-              ],
-            );
-          });
-    });
   }
-}
+  

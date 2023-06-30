@@ -1,8 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:newama2/auth/test.dart';
+import 'package:newama2/general/allOrders.dart';
+import 'package:newama2/general/dispatch.dart';
 import 'package:newama2/general/order.dart';
+import 'package:newama2/general/transit.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -13,8 +18,13 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   Query dbRef = FirebaseDatabase.instance.ref().child('Orders');
+   
   @override
   Widget build(BuildContext context) {
+    var dt4 = DateTime.fromMillisecondsSinceEpoch(
+        DateTime.now().millisecondsSinceEpoch);
+    var TAS4 = DateFormat('dd/MM/yyyy').format(dt4);
+    var TAS5 = TAS4;
     int check = 0;
     var dt2 = DateTime.fromMillisecondsSinceEpoch(
         DateTime.now().millisecondsSinceEpoch);
@@ -39,19 +49,32 @@ class _DashboardState extends State<Dashboard> {
                       bottomRight: Radius.circular(15))),
               child: SizedBox(
                 width: double.infinity,
-                height: 222,
+                height: 242,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(
                       height: 30,
                     ),
-                    const Text(
-                      'Welcome, Admin',
-                      style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Welcome, Admin',
+                          style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white),
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Color.fromARGB(255, 119, 194, 255),
+                          ),
+                          onPressed: (){
+                            FirebaseAuth.instance.signOut();
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => Test()));
+                          }, child: Text('Exit'))
+                      ],
                     ),
                     const SizedBox(
                       height: 20,
@@ -68,12 +91,17 @@ class _DashboardState extends State<Dashboard> {
                           child: SizedBox(
                             width: 116,
                             height: 56,
-                            child: Column(
-                              children: [
-                                Icon(Icons.store,color: Colors.white),
-                                Text('All Orders', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),),
-                                Text('415', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),)
-                              ],
+                            child: GestureDetector(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => AllOrders(selectedDate: TAS4, end: TAS5)));
+                              },
+                              child: Column(
+                                children: [
+                                  Icon(Icons.store,color: Colors.white),
+                                  Text('All Orders', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),),
+                                  Text('Total: 415', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),)
+                                ],
+                              ),
                             ),
 
                           ),
@@ -92,7 +120,7 @@ class _DashboardState extends State<Dashboard> {
                               children: [
                                 Icon(Icons.motorcycle_outlined,color: Colors.white),
                                 Text('Delivered Orders', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),),
-                                Text('400', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),)
+                                Text('Total: 400', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),)
                               ],
                             ),
 
@@ -121,7 +149,7 @@ class _DashboardState extends State<Dashboard> {
                               children: [
                                 Icon(Icons.arrow_back_sharp,color: Colors.white),
                                 Text('Returned Orders', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),),
-                                Text('8', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),)
+                                Text('Total: 8', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),)
                               ],
                             ),
 
@@ -141,7 +169,7 @@ class _DashboardState extends State<Dashboard> {
                               children: [
                                 Icon(Icons.backspace_sharp,color: Colors.white),
                                 Text('Cancelled Orders', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),),
-                                Text('7', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),)
+                                Text('Total: 7', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),)
                               ],
                             ),
 
@@ -216,7 +244,9 @@ class _DashboardState extends State<Dashboard> {
                                                           if (TAS3.compareTo(TAS2) == 0){
                                                             return GestureDetector(
                                                               onTap: (){
-                                                                Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPage(orderno: snapshot.key as String)));
+                                                                Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPage(orderno: snapshot.key as String,
+                                                                outlet: orders['outlet'], status: orders['status']
+                                                                )));
                                                               },
                                                               child: Column(
                                                                 children: [
@@ -323,7 +353,11 @@ class _DashboardState extends State<Dashboard> {
                                                           check = check +1;
                                                           if (TAS3.compareTo(TAS2) == 0){
                                                             return GestureDetector(
-                                                              onTap: (){},
+                                                              onTap: (){
+                                                                Navigator.push(context, MaterialPageRoute(builder: (context) => DispatchPage(orderno: snapshot.key as String,
+                                                                outlet: orders['outlet'], status: orders['status'], rider: orders['RiderMail']
+                                                                )));
+                                                              },
                                                               child: Column(
                                                                 children: [
                                                                   Row(
@@ -359,7 +393,9 @@ class _DashboardState extends State<Dashboard> {
                                     ),
                                     
                                     GestureDetector(
-                                      onTap: (){},
+                                      onTap: (){
+
+                                      },
                                       child: Row(
                                         children: [
                                           Text('View All', style: TextStyle(color: Colors.red),),
@@ -435,7 +471,11 @@ class _DashboardState extends State<Dashboard> {
                                                           check = check +1;
                                                           if (TAS3.compareTo(TAS2) == 0){
                                                             return GestureDetector(
-                                                              onTap: (){},
+                                                              onTap: (){
+                                                                Navigator.push(context, MaterialPageRoute(builder: (context) => TransitPage(orderno: snapshot.key as String,
+                                                                outlet: orders['outlet'], status: orders['status'], rider: orders['RiderMail']
+                                                                )));
+                                                              },
                                                               child: Column(
                                                                 children: [
                                                                   Row(

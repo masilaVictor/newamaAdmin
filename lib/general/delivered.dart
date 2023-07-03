@@ -3,31 +3,30 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:newama2/general/dashboard.dart';
+import 'package:newama2/general/deliveredDate.dart';
 import 'package:newama2/general/orderView.dart';
 import 'package:newama2/general/ordersDate.dart';
 
-class AllOrders extends StatefulWidget {
+class DeliveredOrders extends StatefulWidget {
   var selectedDate;
   var end;
-  AllOrders({super.key, required this.selectedDate, required this.end});
+  DeliveredOrders({super.key, required this.selectedDate, required this.end});
 
   @override
-  State<AllOrders> createState() => _AllOrdersState(selectedDate, end);
+  State<DeliveredOrders> createState() => _DeliveredOrdersState(selectedDate, end);
 }
 
-class _AllOrdersState extends State<AllOrders> {
-  Query dbRef = FirebaseDatabase.instance.ref().child('Orders');
+class _DeliveredOrdersState extends State<DeliveredOrders> {
   var selectedDate;
   var end;
+  Query dbRef = FirebaseDatabase.instance.ref().child('Orders');
+  _DeliveredOrdersState(this.selectedDate, this.end);
 
-  _AllOrdersState(this.selectedDate, this.end);
   @override
   Widget build(BuildContext context) {
-    List<int> allOrders = [];
-    int count = 1;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('All Orders'),
+        title: const Text('Delivered Orders'),
         backgroundColor: const Color.fromARGB(255, 3, 83, 148),
         automaticallyImplyLeading: false,
         leading: IconButton(
@@ -56,7 +55,7 @@ class _AllOrdersState extends State<AllOrders> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const OrdersDate()));
+                                builder: (context) => const DeliveredDate()));
                       },
                       child: Text('Change Date'))
                 ],
@@ -64,7 +63,7 @@ class _AllOrdersState extends State<AllOrders> {
               SizedBox(
                 height: 500,
                 child: FirebaseAnimatedList(
-                    query: dbRef,
+                    query: dbRef.orderByChild('status').equalTo('Delivered'),
                     itemBuilder: (BuildContext context, DataSnapshot snapshot,
                         Animation<double> animation, int index) {
                       Map order = snapshot.value as Map;
@@ -78,7 +77,7 @@ class _AllOrdersState extends State<AllOrders> {
                       if ((TAS3.compareTo(end) != -1) &&
                           TAS3.compareTo(selectedDate) == 0) {
                         //allOrders.add(index);
-                        count = index;
+                        
 
                         return Container(
                           margin: const EdgeInsets.all(10),
@@ -89,7 +88,7 @@ class _AllOrdersState extends State<AllOrders> {
                                   : order['status'] == 'Processing'
                                       ? Colors.blue
                                       : order['status'] == 'Transit'
-                                          ? const Color.fromARGB(255, 102, 92, 0)
+                                          ? Colors.yellow
                                           : order['status'] == 'Delivered'
                                               ? Colors.green
                                               : Color.fromARGB(80, 126, 1, 42),
@@ -98,8 +97,7 @@ class _AllOrdersState extends State<AllOrders> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersView(orderno: snapshot.key as String, outlet: order['outlet'], status: order['status'])));
-
+                                   Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersView(orderno: snapshot.key as String, outlet: order['outlet'], status: order['status'])));
                                 },
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,4 +142,4 @@ class _AllOrdersState extends State<AllOrders> {
       ),
     );
   }
-}
+  }

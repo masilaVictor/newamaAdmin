@@ -5,9 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:newama2/auth/test.dart';
 import 'package:newama2/general/allOrders.dart';
+import 'package:newama2/general/cancelled.dart';
+import 'package:newama2/general/delivered.dart';
 import 'package:newama2/general/dispatch.dart';
+import 'package:newama2/general/dispatchOrders.dart';
+import 'package:newama2/general/neworders.dart';
 import 'package:newama2/general/order.dart';
+import 'package:newama2/general/returned.dart';
 import 'package:newama2/general/transit.dart';
+import 'package:newama2/general/transitOrders.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -99,7 +105,7 @@ class _DashboardState extends State<Dashboard> {
                                 children: [
                                   Icon(Icons.store,color: Colors.white),
                                   Text('All Orders', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),),
-                                  Text('Total: 415', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),)
+                                  Text('Total: 85', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),)
                                 ],
                               ),
                             ),
@@ -116,12 +122,17 @@ class _DashboardState extends State<Dashboard> {
                             width: 116,
                             height: 56,
               
-                            child: Column(
-                              children: [
-                                Icon(Icons.motorcycle_outlined,color: Colors.white),
-                                Text('Delivered Orders', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),),
-                                Text('Total: 400', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),)
-                              ],
+                            child: GestureDetector(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => DeliveredOrders(selectedDate: TAS4, end: TAS5)));
+                              },
+                              child: Column(
+                                children: [
+                                  Icon(Icons.motorcycle_outlined,color: Colors.white),
+                                  Text('Delivered Orders', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),),
+                                  Text('Total: 83', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),)
+                                ],
+                              ),
                             ),
 
                           
@@ -145,12 +156,17 @@ class _DashboardState extends State<Dashboard> {
                           child: SizedBox(
                             width: 116,
                             height: 56,
-                            child: Column(
-                              children: [
-                                Icon(Icons.arrow_back_sharp,color: Colors.white),
-                                Text('Returned Orders', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),),
-                                Text('Total: 8', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),)
-                              ],
+                            child: GestureDetector(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => ReturnedOrders(selectedDate: TAS4, end: TAS5)));
+                              },
+                              child: Column(
+                                children: [
+                                  Icon(Icons.arrow_back_sharp,color: Colors.white),
+                                  Text('Returned Orders', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),),
+                                  Text('Total: 0', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),)
+                                ],
+                              ),
                             ),
 
                           ),
@@ -165,12 +181,17 @@ class _DashboardState extends State<Dashboard> {
                             width: 116,
                             height: 56,
               
-                            child: Column(
-                              children: [
-                                Icon(Icons.backspace_sharp,color: Colors.white),
-                                Text('Cancelled Orders', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),),
-                                Text('Total: 7', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),)
-                              ],
+                            child: GestureDetector(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => CancelledOrders(selectedDate: TAS4, end: TAS5)));
+                              },
+                              child: Column(
+                                children: [
+                                  Icon(Icons.backspace_sharp,color: Colors.white),
+                                  Text('Cancelled Orders', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),),
+                                  Text('Total: 2', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),)
+                                ],
+                              ),
                             ),
 
                           ),
@@ -186,7 +207,10 @@ class _DashboardState extends State<Dashboard> {
               margin: EdgeInsets.fromLTRB(10, 20, 10, 0),
               child: Column(
                 children: [
-                  Text('Orders Summary', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
+                  Text('Activity Summary', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Container(
                     child: Column(
                       
@@ -278,12 +302,17 @@ class _DashboardState extends State<Dashboard> {
                                     ),
                                     GestureDetector(
                                       onTap: (){},
-                                      child: Row(
-                                        children: [
-                                          Text('View All', style: TextStyle(color: Colors.red),),
-                                          Icon(Icons.arrow_forward_ios, size: 10,color: Colors.red,)
-
-                                        ],
+                                      child: GestureDetector(
+                                        onTap: (){
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => NewOrders()));
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Text('View All', style: TextStyle(color: Colors.red),),
+                                            Icon(Icons.arrow_forward_ios, size: 10,color: Colors.red,)
+                                      
+                                          ],
+                                        ),
                                       ),
                                     ),
                                     const SizedBox(
@@ -394,6 +423,7 @@ class _DashboardState extends State<Dashboard> {
                                     
                                     GestureDetector(
                                       onTap: (){
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => DispatchOrders()));
 
                                       },
                                       child: Row(
@@ -510,7 +540,9 @@ class _DashboardState extends State<Dashboard> {
                                     ),
                                     
                                     GestureDetector(
-                                      onTap: (){},
+                                      onTap: (){
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => TransitOrders()));
+                                      },
                                       child: Row(
                                         children: [
                                           Text('View All', style: TextStyle(color: Colors.red),),

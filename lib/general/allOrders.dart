@@ -22,10 +22,11 @@ class _AllOrdersState extends State<AllOrders> {
   _AllOrdersState(this.selectedDate, this.end);
   @override
   Widget build(BuildContext context) {
-    
+    List<int> allOrders = [];
+    int count = 1;
     return Scaffold(
       appBar: AppBar(
-        title: Text('All Orders'),
+        title: Text('All Orders ${allOrders.length}'),
         backgroundColor: const Color.fromARGB(255, 3, 83, 148),
         automaticallyImplyLeading: false,
         leading: IconButton(
@@ -48,9 +49,8 @@ class _AllOrdersState extends State<AllOrders> {
                     style: TextStyle(fontSize: 17),
                   ),
                   ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: const Color.fromARGB(255, 0, 63, 114)
-                    ),
+                      style: ElevatedButton.styleFrom(
+                          primary: const Color.fromARGB(255, 0, 63, 114)),
                       onPressed: () {
                         Navigator.push(
                             context,
@@ -74,7 +74,11 @@ class _AllOrdersState extends State<AllOrders> {
                           int.parse(order['postTime']));
                       var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
 
-                      if ((TAS3.compareTo(selectedDate) == 0) || TAS3.compareTo(end) < 0) {
+                      if ((TAS3.compareTo(end) != -1) &&
+                          TAS3.compareTo(selectedDate) == 0) {
+                        //allOrders.add(index);
+                        count = index;
+
                         return Container(
                           margin: const EdgeInsets.all(10),
                           padding: EdgeInsets.all(15),
@@ -129,6 +133,7 @@ class _AllOrdersState extends State<AllOrders> {
                       }
                     }),
               ),
+              Text('All Orders ${count}'),
             ],
           ),
         ),

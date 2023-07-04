@@ -208,7 +208,7 @@ class _OrderPageState extends State<OrderPage> {
 
                       });
                     }
-                    assignRider(orderno, riderId!, 'Pending');
+                    assignRider(orderno, riderId!, 'Pending',);
                   },
                   child: const Text('Assign Rider'))
                   ],
@@ -226,9 +226,9 @@ class _OrderPageState extends State<OrderPage> {
         .update({"status": status, "AssignedTime": assTime});
   }
 
-  void addRiderMail(String riderEmail, orderNo, status, assignedTime) {
+  void addRiderMail(String riderEmail, orderNo, status, assignedTime, outlet) {
     dataseRef.child("Assignments").child("${orderno}").update(
-        {"RiderMail": riderEmail, "OrderNumber": orderNo, "status": status, 'Time':assignedTime});
+        {"RiderMail": riderEmail, "OrderNumber": orderNo, "status": status, 'Time':assignedTime, 'outlet':outlet});
     dataseRef
         .child("Orders")
         .child("${orderno}")
@@ -251,7 +251,7 @@ class _OrderPageState extends State<OrderPage> {
               actions: [
                 ElevatedButton(
                     onPressed: () {
-                      addRiderMail(riderId as String, orderno, "Pending",DateTime.now().millisecondsSinceEpoch.toString());
+                      addRiderMail(riderId as String, orderno, "Pending",DateTime.now().millisecondsSinceEpoch.toString(), outlet);
                       changeOrderStatus('Processing',
                           DateTime.now().millisecondsSinceEpoch.toString());
 

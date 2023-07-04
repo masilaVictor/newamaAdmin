@@ -48,9 +48,9 @@ class _OrdersViewState extends State<OrdersView> {
                   ),
                   child: SizedBox(
                     width: double.infinity,
-                    height: 260,
+                    height: 345,
                     child: Container(
-                      margin: EdgeInsets.fromLTRB(30, 10, 30, 0),
+                      margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
                       child: Column(
                         children: [
                           Expanded(

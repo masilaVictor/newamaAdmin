@@ -75,7 +75,7 @@ class _AllOrdersState extends State<AllOrders> {
                           int.parse(order['postTime']));
                       var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
 
-                      if ((TAS3.compareTo(end) != -1) &&
+                      if ((TAS3.compareTo(end) == 1) ||
                           TAS3.compareTo(selectedDate) == 0) {
                         //allOrders.add(index);
                         count = index;

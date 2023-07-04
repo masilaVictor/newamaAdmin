@@ -48,8 +48,15 @@ dependencies:
   google_maps_flutter: ^2.2.6
   http: ^0.13.6
   syncfusion_flutter_datepicker: ^21.2.3
+  awesome_notifications: ^0.7.4+1
 
 dev_dependencies:
+  flutter_launcher_icons: "^0.13.1"
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/newama_fav2.png"
+
   flutter_test:
     sdk: flutter
 

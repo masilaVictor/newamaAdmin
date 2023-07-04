@@ -67,7 +67,7 @@ class _OrderPageState extends State<OrderPage> {
                     width: double.infinity,
                     height: 260,
                     child: Container(
-                      margin: EdgeInsets.fromLTRB(30, 10, 30, 0),
+                      margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
                       child: Column(
                         children: [
                           Expanded(
@@ -172,7 +172,7 @@ class _OrderPageState extends State<OrderPage> {
                   children: [
                    Container(
                 child: SizedBox(
-                  width: 250,
+                  width: 180,
                   child: FormHelper.dropDownWidget(
                     context,
                     "Select Rider",

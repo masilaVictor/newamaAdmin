@@ -43,7 +43,7 @@ class _TestState extends State<Test> {
                       children: [
                         Image.asset('assets/images/rider.png'),
                         Container(
-                          margin: EdgeInsets.fromLTRB(70, 0, 70, 0),
+                          margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
                           transform: Matrix4.translationValues(0, -60, 0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

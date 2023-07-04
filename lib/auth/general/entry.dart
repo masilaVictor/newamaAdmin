@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,25 @@ class _EntriesState extends State<Entries> {
   final dataseRef = FirebaseDatabase.instance.ref();
   final User? user = FirebaseAuth.instance.currentUser;
   String store = '';
+
+  @override
+  void initState(){
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed){
+      if(!isAllowed){
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
+    super.initState();
+  }
+  triggerNotification(){
+    AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 10, 
+        channelKey: 'Newama_delivery',
+        title: 'New Order Made',
+        body: 'You have a new order'
+        ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +115,7 @@ class _EntriesState extends State<Entries> {
               height: 20,
             ),
             Container(
-              margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+              margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
               child: Column(
                 children: [
                   Row(
@@ -103,7 +123,7 @@ class _EntriesState extends State<Entries> {
                     children: [
                       SizedBox(
                         height: 50,
-                        width: 150,
+                        width: 100,
                         child: TextField(
                           controller: __orderId,
                           decoration: InputDecoration(
@@ -120,7 +140,7 @@ class _EntriesState extends State<Entries> {
                       ),
                       SizedBox(
                         height: 50,
-                        width: 200,
+                        width: 150,
                         child: TextField(
                           controller: __productNameController,
                           decoration: InputDecoration(
@@ -145,7 +165,7 @@ class _EntriesState extends State<Entries> {
                     children: [
                       SizedBox(
                         height: 50,
-                        width: 150,
+                        width: 100,
                         child: TextField(
                           controller: __productQuantityController,
                           decoration: InputDecoration(
@@ -162,7 +182,7 @@ class _EntriesState extends State<Entries> {
                       ),
                       SizedBox(
                         height: 50,
-                        width: 200,
+                        width: 150,
                         child: TextField(
                           controller: __priceController,
                           decoration: InputDecoration(
@@ -194,7 +214,7 @@ class _EntriesState extends State<Entries> {
                     children: [
                       SizedBox(
                         height: 50,
-                        width: 170,
+                        width: 130,
                         child: TextField(
                           controller: __customerNameController,
                           decoration: InputDecoration(
@@ -211,7 +231,7 @@ class _EntriesState extends State<Entries> {
                       ),
                       SizedBox(
                         height: 50,
-                        width: 170,
+                        width: 150,
                         child: TextField(
                           controller: __customerContacts,
                           decoration: InputDecoration(
@@ -236,7 +256,7 @@ class _EntriesState extends State<Entries> {
                     children: [
                       SizedBox(
                         height: 50,
-                        width: 170,
+                        width: 130,
                         child: TextField(
                           controller: __townController,
                           decoration: InputDecoration(
@@ -253,7 +273,7 @@ class _EntriesState extends State<Entries> {
                       ),
                       SizedBox(
                         height: 50,
-                        width: 170,
+                        width: 150,
                         child: TextField(
                           controller: __customerStreet,
                           decoration: InputDecoration(
@@ -310,6 +330,7 @@ class _EntriesState extends State<Entries> {
                               __productQuantityController.text);
                               insertCustomerDetails(__customerNameController.text, __customerContacts.text, __townController.text, 
                               __customerStreet.text);
+                              triggerNotification();
 
                                   changeOrderStatus(
                                 'Pending',

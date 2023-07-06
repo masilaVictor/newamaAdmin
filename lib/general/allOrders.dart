@@ -75,8 +75,7 @@ class _AllOrdersState extends State<AllOrders> {
                           int.parse(order['postTime']));
                       var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
 
-                      if ((TAS3.compareTo(end) == 1) ||
-                          TAS3.compareTo(selectedDate) == 0) {
+                      if (TAS3.compareTo(selectedDate) == 0) {
                         //allOrders.add(index);
                         count = index;
 
@@ -89,7 +88,8 @@ class _AllOrdersState extends State<AllOrders> {
                                   : order['status'] == 'Processing'
                                       ? Colors.blue
                                       : order['status'] == 'Transit'
-                                          ? const Color.fromARGB(255, 102, 92, 0)
+                                          ? const Color.fromARGB(
+                                              255, 102, 92, 0)
                                           : order['status'] == 'Delivered'
                                               ? Colors.green
                                               : Color.fromARGB(80, 126, 1, 42),
@@ -98,8 +98,13 @@ class _AllOrdersState extends State<AllOrders> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersView(orderno: snapshot.key as String, outlet: order['outlet'], status: order['status'])));
-
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => OrdersView(
+                                              orderno: snapshot.key as String,
+                                              outlet: order['outlet'],
+                                              status: order['status'])));
                                 },
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,7 +142,6 @@ class _AllOrdersState extends State<AllOrders> {
                       }
                     }),
               ),
-              
             ],
           ),
         ),

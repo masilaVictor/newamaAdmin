@@ -9,14 +9,14 @@ import 'package:newama2/general/orderView.dart';
 import 'package:newama2/general/ordersDate.dart';
 import 'package:newama2/general/returnedDate.dart';
 
-
 class CancelledOrders extends StatefulWidget {
   var selectedDate;
   var end;
   CancelledOrders({super.key, required this.selectedDate, required this.end});
 
   @override
-  State<CancelledOrders> createState() => _CancelledOrdersState(selectedDate, end);
+  State<CancelledOrders> createState() =>
+      _CancelledOrdersState(selectedDate, end);
 }
 
 class _CancelledOrdersState extends State<CancelledOrders> {
@@ -77,10 +77,8 @@ class _CancelledOrdersState extends State<CancelledOrders> {
                           int.parse(order['postTime']));
                       var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
 
-                      if ((TAS3.compareTo(end) != -1) &&
-                          TAS3.compareTo(selectedDate) == 0) {
+                      if (TAS3.compareTo(selectedDate) == 0) {
                         //allOrders.add(index);
-                        
 
                         return Container(
                           margin: const EdgeInsets.all(10),
@@ -100,7 +98,13 @@ class _CancelledOrdersState extends State<CancelledOrders> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                   Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersView(orderno: snapshot.key as String, outlet: order['outlet'], status: order['status'])));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => OrdersView(
+                                              orderno: snapshot.key as String,
+                                              outlet: order['outlet'],
+                                              status: order['status'])));
                                 },
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,7 +142,6 @@ class _CancelledOrdersState extends State<CancelledOrders> {
                       }
                     }),
               ),
-              
             ],
           ),
         ),

@@ -14,7 +14,8 @@ class ReturnedOrders extends StatefulWidget {
   ReturnedOrders({super.key, required this.selectedDate, required this.end});
 
   @override
-  State<ReturnedOrders> createState() => _ReturnedOrdersState(selectedDate, end);
+  State<ReturnedOrders> createState() =>
+      _ReturnedOrdersState(selectedDate, end);
 }
 
 class _ReturnedOrdersState extends State<ReturnedOrders> {
@@ -75,10 +76,8 @@ class _ReturnedOrdersState extends State<ReturnedOrders> {
                           int.parse(order['postTime']));
                       var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
 
-                      if ((TAS3.compareTo(end) != -1) &&
-                          TAS3.compareTo(selectedDate) == 0) {
+                      if (TAS3.compareTo(selectedDate) == 0) {
                         //allOrders.add(index);
-                        
 
                         return Container(
                           margin: const EdgeInsets.all(10),
@@ -98,7 +97,13 @@ class _ReturnedOrdersState extends State<ReturnedOrders> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                   Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersView(orderno: snapshot.key as String, outlet: order['outlet'], status: order['status'])));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => OrdersView(
+                                              orderno: snapshot.key as String,
+                                              outlet: order['outlet'],
+                                              status: order['status'])));
                                 },
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,7 +141,6 @@ class _ReturnedOrdersState extends State<ReturnedOrders> {
                       }
                     }),
               ),
-              
             ],
           ),
         ),

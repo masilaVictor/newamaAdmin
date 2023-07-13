@@ -24,7 +24,7 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   Query dbRef = FirebaseDatabase.instance.ref().child('Orders');
-   
+
   @override
   Widget build(BuildContext context) {
     var dt4 = DateTime.fromMillisecondsSinceEpoch(
@@ -73,13 +73,17 @@ class _DashboardState extends State<Dashboard> {
                               color: Colors.white),
                         ),
                         ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Color.fromARGB(255, 119, 194, 255),
-                          ),
-                          onPressed: (){
-                            FirebaseAuth.instance.signOut();
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => Test()));
-                          }, child: Text('Exit'))
+                            style: ElevatedButton.styleFrom(
+                              primary: Color.fromARGB(255, 119, 194, 255),
+                            ),
+                            onPressed: () {
+                              FirebaseAuth.instance.signOut();
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Test()));
+                            },
+                            child: Text('Exit'))
                       ],
                     ),
                     const SizedBox(
@@ -91,52 +95,74 @@ class _DashboardState extends State<Dashboard> {
                         Container(
                           padding: EdgeInsets.all(3),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Color.fromARGB(169, 183, 253, 214)
-                          ),
+                              borderRadius: BorderRadius.circular(5),
+                              color: Color.fromARGB(169, 183, 253, 214)),
                           child: SizedBox(
                             width: 116,
                             height: 56,
                             child: GestureDetector(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => AllOrders(selectedDate: TAS4, end: TAS5)));
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AllOrders(
+                                            selectedDate: TAS4, end: TAS5)));
                               },
                               child: Column(
                                 children: [
-                                  Icon(Icons.store,color: Colors.white),
-                                  Text('All Orders', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),),
-                                  Text('Total: 85', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),)
+                                  Icon(Icons.store, color: Colors.white),
+                                  Text(
+                                    'All Orders',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white),
+                                  ),
+                                  Text(
+                                    'Total: --',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white),
+                                  )
                                 ],
                               ),
                             ),
-
                           ),
                         ),
-                         Container(
+                        Container(
                           padding: EdgeInsets.all(3),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Color.fromARGB(199, 96, 85, 247)
-                          ),
+                              borderRadius: BorderRadius.circular(5),
+                              color: Color.fromARGB(199, 96, 85, 247)),
                           child: SizedBox(
                             width: 116,
                             height: 56,
-              
                             child: GestureDetector(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => DeliveredOrders(selectedDate: TAS4, end: TAS5)));
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => DeliveredOrders(
+                                            selectedDate: TAS4, end: TAS5)));
                               },
                               child: Column(
                                 children: [
-                                  Icon(Icons.motorcycle_outlined,color: Colors.white),
-                                  Text('Delivered Orders', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),),
-                                  Text('Total: 83', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),)
+                                  Icon(Icons.motorcycle_outlined,
+                                      color: Colors.white),
+                                  Text(
+                                    'Delivered Orders',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white),
+                                  ),
+                                  Text(
+                                    'Total: --',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white),
+                                  )
                                 ],
                               ),
                             ),
-
-                          
-
                           ),
                         )
                       ],
@@ -144,61 +170,85 @@ class _DashboardState extends State<Dashboard> {
                     const SizedBox(
                       height: 20,
                     ),
-                     Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Container(
                           padding: EdgeInsets.all(3),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Color.fromARGB(169, 250, 231, 57)
-                          ),
+                              borderRadius: BorderRadius.circular(5),
+                              color: Color.fromARGB(169, 250, 231, 57)),
                           child: SizedBox(
                             width: 116,
                             height: 56,
                             child: GestureDetector(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => ReturnedOrders(selectedDate: TAS4, end: TAS5)));
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ReturnedOrders(
+                                            selectedDate: TAS4, end: TAS5)));
                               },
                               child: Column(
                                 children: [
-                                  Icon(Icons.arrow_back_sharp,color: Colors.white),
-                                  Text('Returned Orders', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),),
-                                  Text('Total: 0', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),)
+                                  Icon(Icons.arrow_back_sharp,
+                                      color: Colors.white),
+                                  Text(
+                                    'Returned Orders',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white),
+                                  ),
+                                  Text(
+                                    'Total: --',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white),
+                                  )
                                 ],
                               ),
                             ),
-
                           ),
                         ),
-                         Container(
+                        Container(
                           padding: EdgeInsets.all(3),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Color.fromARGB(197, 253, 57, 57)
-                          ),
+                              borderRadius: BorderRadius.circular(5),
+                              color: Color.fromARGB(197, 253, 57, 57)),
                           child: SizedBox(
                             width: 116,
                             height: 56,
-              
                             child: GestureDetector(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => CancelledOrders(selectedDate: TAS4, end: TAS5)));
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CancelledOrders(
+                                            selectedDate: TAS4, end: TAS5)));
                               },
                               child: Column(
                                 children: [
-                                  Icon(Icons.backspace_sharp,color: Colors.white),
-                                  Text('Cancelled Orders', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),),
-                                  Text('Total: 2', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white),)
+                                  Icon(Icons.backspace_sharp,
+                                      color: Colors.white),
+                                  Text(
+                                    'Cancelled Orders',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white),
+                                  ),
+                                  Text(
+                                    'Total: --',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white),
+                                  )
                                 ],
                               ),
                             ),
-
                           ),
                         )
                       ],
                     ),
-                    
                   ],
                 ),
               ),
@@ -207,17 +257,23 @@ class _DashboardState extends State<Dashboard> {
               margin: EdgeInsets.fromLTRB(10, 20, 10, 0),
               child: Column(
                 children: [
-                  Text('Activity Summary', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
+                  Text(
+                    'Activity Summary',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                  ),
                   SizedBox(
                     height: 20,
                   ),
                   Container(
                     child: Column(
-                      
                       children: [
                         Row(
                           children: [
-                            Text('New Orders', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                            Text(
+                              'New Orders',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w500),
+                            ),
                           ],
                         ),
                         const SizedBox(
@@ -235,103 +291,132 @@ class _DashboardState extends State<Dashboard> {
                             child: Column(
                               children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text('Order No.', style: TextStyle(fontWeight: FontWeight.w500),),
-                                    Text('Store', style: TextStyle(fontWeight: FontWeight.w500)),
-                                    Text('Status',style: TextStyle(fontWeight: FontWeight.w500)),
-                                    Text('Date',style: TextStyle(fontWeight: FontWeight.w500))
-
+                                    Text(
+                                      'Order No.',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    Text('Store',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500)),
+                                    Text('Status',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500)),
+                                    Text('Date',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500))
                                   ],
                                 ),
                                 const SizedBox(
                                   height: 20,
                                 ),
-                                
-                                  Expanded(
-                                      
-                                    child: FirebaseAnimatedList(
-                                         query: dbRef.orderByChild('status').equalTo('Pending'),
-                                                        itemBuilder: (BuildContext context, DataSnapshot snapshot,
-                                                          Animation<double> animation, int index) {
-                                                          Map orders = snapshot.value as Map;
-                                                          orders['key'] = snapshot.key;
-                                    
-                                                          // var dt3 = DateTime.fromMillisecondsSinceEpoch(
-                                                          // orders['postTime'].millisecondsSinceEpoch);
-                                                          // var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
-                                    
-                                                          var dt3 = DateTime.fromMillisecondsSinceEpoch(
-                                                              int.parse(orders['postTime']));
-                                                          var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
-                                                          check = check +1;
-                                                          if (TAS3.compareTo(TAS2) == 0){
-                                                            return GestureDetector(
-                                                              onTap: (){
-                                                                Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPage(orderno: snapshot.key as String,
-                                                                outlet: orders['outlet'], status: orders['status']
-                                                                )));
-                                                              },
-                                                              child: Column(
-                                                                children: [
-                                                                  Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                    children: [
-                                                                      Text('${snapshot.key}'),
-                                                                      Text('${orders['outlet']}'),
-                                                                      Text('${orders['status']}'),
-                                                                      Text('$TAS3'),
-                                                                      
-                                    
-                                                                    ],
-                                                                  ),
-                                                                  
-                                                                  const SizedBox(
-                                                                    height: 13,
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            );
-                                                          }
-                                                          else{
-                                                            return Container();
-                                                          }
-                                                            }
-                                                                                   
-                                                                    ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: (){},
-                                      child: GestureDetector(
-                                        onTap: (){
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) => NewOrders()));
-                                        },
-                                        child: Row(
-                                          children: [
-                                            Text('View All', style: TextStyle(color: Colors.red),),
-                                            Icon(Icons.arrow_forward_ios, size: 10,color: Colors.red,)
-                                      
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
+                                Expanded(
+                                  child: FirebaseAnimatedList(
+                                      query: dbRef
+                                          .orderByChild('status')
+                                          .equalTo('Pending'),
+                                      itemBuilder: (BuildContext context,
+                                          DataSnapshot snapshot,
+                                          Animation<double> animation,
+                                          int index) {
+                                        Map orders = snapshot.value as Map;
+                                        orders['key'] = snapshot.key;
 
-                                    
-                                    
+                                        // var dt3 = DateTime.fromMillisecondsSinceEpoch(
+                                        // orders['postTime'].millisecondsSinceEpoch);
+                                        // var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
+
+                                        var dt3 =
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                                int.parse(orders['postTime']));
+                                        var TAS3 = DateFormat('dd/MM/yyyy')
+                                            .format(dt3);
+                                        check = check + 1;
+                                        if (TAS3.compareTo(TAS2) == 0) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          OrderPage(
+                                                              orderno:
+                                                                  snapshot.key
+                                                                      as String,
+                                                              outlet: orders[
+                                                                  'outlet'],
+                                                              status: orders[
+                                                                  'status'])));
+                                            },
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text('${snapshot.key}'),
+                                                    Text('${orders['outlet']}'),
+                                                    Text('${orders['status']}'),
+                                                    Text('$TAS3'),
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 13,
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        } else {
+                                          return Container();
+                                        }
+                                      }),
+                                ),
+                                GestureDetector(
+                                  onTap: () {},
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  NewOrders()));
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          'View All',
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                        Icon(
+                                          Icons.arrow_forward_ios,
+                                          size: 10,
+                                          color: Colors.red,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
                               ],
                             ),
-
                           ),
                         ),
                         const SizedBox(
                           height: 20,
                         ),
-                         Row(
+                        Row(
                           children: [
-                            Text('Orders in Dispatch', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                            Text(
+                              'Orders in Dispatch',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w500),
+                            ),
                           ],
                         ),
                         const SizedBox(
@@ -349,108 +434,131 @@ class _DashboardState extends State<Dashboard> {
                             child: Column(
                               children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text('Order No.', style: TextStyle(fontWeight: FontWeight.w500),),
-                                    Text('Store', style: TextStyle(fontWeight: FontWeight.w500)),
-                                    Text('Status',style: TextStyle(fontWeight: FontWeight.w500)),
-                                    Text('Date',style: TextStyle(fontWeight: FontWeight.w500))
-
+                                    Text(
+                                      'Order No.',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    Text('Store',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500)),
+                                    Text('Status',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500)),
+                                    Text('Date',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500))
                                   ],
                                 ),
                                 const SizedBox(
                                   height: 20,
                                 ),
-                                
-                                
-                                  Expanded(
-                                      
-                                    child: FirebaseAnimatedList(
-                                         query: dbRef.orderByChild('status').equalTo('Processing'),
-                                                        itemBuilder: (BuildContext context, DataSnapshot snapshot,
-                                                          Animation<double> animation, int index) {
-                                                          Map orders = snapshot.value as Map;
-                                                          orders['key'] = snapshot.key;
-                                    
-                                                          // var dt3 = DateTime.fromMillisecondsSinceEpoch(
-                                                          // orders['postTime'].millisecondsSinceEpoch);
-                                                          // var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
-                                                      
-                                                          var dt3 = DateTime.fromMillisecondsSinceEpoch(
-                                                              int.parse(orders['postTime']));
-                                                          var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
-                                                          check = check +1;
-                                                          if (TAS3.compareTo(TAS2) == 0){
-                                                            return GestureDetector(
-                                                              onTap: (){
-                                                                Navigator.push(context, MaterialPageRoute(builder: (context) => DispatchPage(orderno: snapshot.key as String,
-                                                                outlet: orders['outlet'], status: orders['status'], rider: orders['RiderMail']
-                                                                )));
-                                                              },
-                                                              child: Column(
-                                                                children: [
-                                                                  Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                    children: [
-                                                                      Text('${snapshot.key}'),
-                                                                      Text('${orders['outlet']}'),
-                                                                      Text('${orders['status']}'),
-                                                                      Text('$TAS3'),
-                                                                      
-                                    
-                                                                    ],
-                                                                    
-                                                                  ),
-                                                                  
-                                                                  const SizedBox(
-                                                                    height: 13,
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            );
-                                                          }
-                                                          else{
-                                                            return Container();
-                                                          }
-                                                            }
-                                      
-                                    
-                                      
-                                      
-                                                                      
-                                                                    ),
-                                    ),
-                                    
-                                    GestureDetector(
-                                      onTap: (){
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => DispatchOrders()));
+                                Expanded(
+                                  child: FirebaseAnimatedList(
+                                      query: dbRef
+                                          .orderByChild('status')
+                                          .equalTo('Processing'),
+                                      itemBuilder: (BuildContext context,
+                                          DataSnapshot snapshot,
+                                          Animation<double> animation,
+                                          int index) {
+                                        Map orders = snapshot.value as Map;
+                                        orders['key'] = snapshot.key;
 
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Text('View All', style: TextStyle(color: Colors.red),),
-                                          Icon(Icons.arrow_forward_ios, size: 10,color: Colors.red,)
+                                        // var dt3 = DateTime.fromMillisecondsSinceEpoch(
+                                        // orders['postTime'].millisecondsSinceEpoch);
+                                        // var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
 
-                                        ],
+                                        var dt3 =
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                                int.parse(orders['postTime']));
+                                        var TAS3 = DateFormat('dd/MM/yyyy')
+                                            .format(dt3);
+                                        check = check + 1;
+                                        if (TAS3.compareTo(TAS2) == 0) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          DispatchPage(
+                                                              orderno:
+                                                                  snapshot.key
+                                                                      as String,
+                                                              outlet: orders[
+                                                                  'outlet'],
+                                                              status: orders[
+                                                                  'status'],
+                                                              rider: orders[
+                                                                  'RiderMail'])));
+                                            },
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text('${snapshot.key}'),
+                                                    Text('${orders['outlet']}'),
+                                                    Text('${orders['status']}'),
+                                                    Text('$TAS3'),
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 13,
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        } else {
+                                          return Container();
+                                        }
+                                      }),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                DispatchOrders()));
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        'View All',
+                                        style: TextStyle(color: Colors.red),
                                       ),
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-
-                                    
-                                    
+                                      Icon(
+                                        Icons.arrow_forward_ios,
+                                        size: 10,
+                                        color: Colors.red,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
                               ],
                             ),
-
                           ),
                         ),
                         const SizedBox(
                           height: 20,
                         ),
-                             Row(
+                        Row(
                           children: [
-                            Text('Orders on Transit', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                            Text(
+                              'Orders on Transit',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w500),
+                            ),
                           ],
                         ),
                         const SizedBox(
@@ -468,114 +576,129 @@ class _DashboardState extends State<Dashboard> {
                             child: Column(
                               children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text('Order No.', style: TextStyle(fontWeight: FontWeight.w500),),
-                                    Text('Store', style: TextStyle(fontWeight: FontWeight.w500)),
-                                    Text('Status',style: TextStyle(fontWeight: FontWeight.w500)),
-                                    Text('Date',style: TextStyle(fontWeight: FontWeight.w500))
-
+                                    Text(
+                                      'Order No.',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    Text('Store',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500)),
+                                    Text('Status',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500)),
+                                    Text('Date',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500))
                                   ],
                                 ),
                                 const SizedBox(
                                   height: 20,
                                 ),
-                                
-                                
-                                  Expanded(
-                                      
-                                    child: FirebaseAnimatedList(
-                                         query: dbRef.orderByChild('status').equalTo('Transit'),
-                                                        itemBuilder: (BuildContext context, DataSnapshot snapshot,
-                                                          Animation<double> animation, int index) {
-                                                          Map orders = snapshot.value as Map;
-                                                          orders['key'] = snapshot.key;
-                                    
-                                                          // var dt3 = DateTime.fromMillisecondsSinceEpoch(
-                                                          // orders['postTime'].millisecondsSinceEpoch);
-                                                          // var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
-                                                      
-                                                          var dt3 = DateTime.fromMillisecondsSinceEpoch(
-                                                              int.parse(orders['postTime']));
-                                                          var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
-                                                          check = check +1;
-                                                          if (TAS3.compareTo(TAS2) == 0){
-                                                            return GestureDetector(
-                                                              onTap: (){
-                                                                Navigator.push(context, MaterialPageRoute(builder: (context) => TransitPage(orderno: snapshot.key as String,
-                                                                outlet: orders['outlet'], status: orders['status'], rider: orders['RiderMail']
-                                                                )));
-                                                              },
-                                                              child: Column(
-                                                                children: [
-                                                                  Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                    children: [
-                                                                      Text('${snapshot.key}'),
-                                                                      Text('${orders['outlet']}'),
-                                                                      Text('${orders['status']}'),
-                                                                      Text('$TAS3'),          
-                                    
-                                                                    ],
-                                                                    
-                                                                  ),
-                                                                  
-                                                                  const SizedBox(
-                                                                    height: 13,
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            );
-                                                          }
-                                                          else{
-                                                            return Container();
-                                                          }
-                                                            }
-                                      
-                                    
-                                      
-                                      
-                                                                      
-                                                                    ),
-                                    ),
-                                    
-                                    GestureDetector(
-                                      onTap: (){
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => TransitOrders()));
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Text('View All', style: TextStyle(color: Colors.red),),
-                                          Icon(Icons.arrow_forward_ios, size: 10,color: Colors.red,)
+                                Expanded(
+                                  child: FirebaseAnimatedList(
+                                      query: dbRef
+                                          .orderByChild('status')
+                                          .equalTo('Transit'),
+                                      itemBuilder: (BuildContext context,
+                                          DataSnapshot snapshot,
+                                          Animation<double> animation,
+                                          int index) {
+                                        Map orders = snapshot.value as Map;
+                                        orders['key'] = snapshot.key;
 
-                                        ],
+                                        // var dt3 = DateTime.fromMillisecondsSinceEpoch(
+                                        // orders['postTime'].millisecondsSinceEpoch);
+                                        // var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
+
+                                        var dt3 =
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                                int.parse(orders['postTime']));
+                                        var TAS3 = DateFormat('dd/MM/yyyy')
+                                            .format(dt3);
+                                        check = check + 1;
+                                        if (TAS3.compareTo(TAS2) == 0) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          TransitPage(
+                                                              orderno:
+                                                                  snapshot.key
+                                                                      as String,
+                                                              outlet: orders[
+                                                                  'outlet'],
+                                                              status: orders[
+                                                                  'status'],
+                                                              rider: orders[
+                                                                  'RiderMail'])));
+                                            },
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text('${snapshot.key}'),
+                                                    Text('${orders['outlet']}'),
+                                                    Text('${orders['status']}'),
+                                                    Text('$TAS3'),
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 13,
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        } else {
+                                          return Container();
+                                        }
+                                      }),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                TransitOrders()));
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        'View All',
+                                        style: TextStyle(color: Colors.red),
                                       ),
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-
-                                    
-                                    
+                                      Icon(
+                                        Icons.arrow_forward_ios,
+                                        size: 10,
+                                        color: Colors.red,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
                               ],
                             ),
-
                           ),
                         )
 
                         //Orders in Transit
                       ],
-                      
                     ),
                   )
                 ],
               ),
             ),
-          
-
-
-
-
           ],
         ),
       ),

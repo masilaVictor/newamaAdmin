@@ -46,7 +46,7 @@ class _AllOrdersState extends State<AllOrders> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    'Date: $end - $selectedDate',
+                    'Date: $selectedDate',
                     style: TextStyle(fontSize: 17),
                   ),
                   ElevatedButton(

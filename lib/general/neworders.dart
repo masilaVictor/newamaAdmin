@@ -16,7 +16,7 @@ class _NewOrdersState extends State<NewOrders> {
   Query dbRef = FirebaseDatabase.instance.ref().child('Orders');
   @override
   Widget build(BuildContext context) {
-     var dt4 = DateTime.fromMillisecondsSinceEpoch(
+    var dt4 = DateTime.fromMillisecondsSinceEpoch(
         DateTime.now().millisecondsSinceEpoch);
     var TAS4 = DateFormat('dd/MM/yyyy').format(dt4);
     var TAS5 = TAS4;
@@ -26,9 +26,8 @@ class _NewOrdersState extends State<NewOrders> {
     var TAS2 = DateFormat('dd/MM/yyyy').format(dt2);
     return Scaffold(
       appBar: AppBar(
-         
         title: const Text('New Orders'),
-        backgroundColor: const Color.fromARGB(255, 3, 83, 148),
+        backgroundColor: Color.fromARGB(255, 35, 40, 44),
         automaticallyImplyLeading: false,
         leading: IconButton(
             onPressed: () {
@@ -39,7 +38,7 @@ class _NewOrdersState extends State<NewOrders> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.fromLTRB(10, 20, 10, 0),
+          margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
           padding: EdgeInsets.all(10),
           child: Column(
             children: [
@@ -60,46 +59,46 @@ class _NewOrdersState extends State<NewOrders> {
                           int.parse(orders['postTime']));
                       var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
 
-                      
-                        return Container(
-                          margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                          padding: EdgeInsets.fromLTRB(5, 20, 5, 20),
-                          decoration: BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius: BorderRadius.circular(10)),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPage(orderno: snapshot.key as String,
-                                                                outlet: orders['outlet'], status: orders['status']
-                                                                )));
-                            },
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Order No. - ${snapshot.key} - ${orders['outlet']}',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  'Date: $TAS3',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 15),
-                                )
-                              ],
-                            ),
+                      return Container(
+                        margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                        padding: EdgeInsets.fromLTRB(5, 20, 5, 20),
+                        decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 35, 40, 44),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => OrderPage(
+                                        orderno: snapshot.key as String,
+                                        outlet: orders['outlet'],
+                                        status: orders['status'])));
+                          },
+                          child: Column(
+                            children: [
+                              Text(
+                                'Order No. - ${snapshot.key} - ${orders['outlet']}',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                'Date: $TAS3',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
+                              )
+                            ],
                           ),
-                        );
-                      
+                        ),
+                      );
                     }),
               ),
             ],
           ),
         ),
       ),
-
-    
     );
   }
 }

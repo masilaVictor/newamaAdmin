@@ -18,11 +18,11 @@ class _DispatchOrdersState extends State<DispatchOrders> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Orders Ready for Dispatch'),
-          backgroundColor: const Color.fromARGB(255, 0, 62, 112),
+          backgroundColor: Color.fromARGB(255, 35, 40, 44),
         ),
         body: SingleChildScrollView(
           child: Container(
-            margin: EdgeInsets.fromLTRB(10, 30, 10, 10),
+            margin: EdgeInsets.fromLTRB(0, 30, 0, 10),
             child: SizedBox(
               height: 500,
               child: FirebaseAnimatedList(
@@ -33,17 +33,22 @@ class _DispatchOrdersState extends State<DispatchOrders> {
                     order['key'] = snapshot.key;
                     return Container(
                       margin: const EdgeInsets.all(10),
-                      padding: EdgeInsets.all(15),
+                      padding: EdgeInsets.all(25),
                       decoration: BoxDecoration(
-                          color: Colors.blueGrey,
+                          color: Color.fromARGB(255, 35, 40, 44),
                           borderRadius: BorderRadius.circular(10)),
                       child: Row(
                         children: [
                           GestureDetector(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => DispatchPage(orderno: snapshot.key as String,
-                                                                outlet: order['outlet'], status: order['status'], rider: order['RiderMail']
-                                                                )));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DispatchPage(
+                                          orderno: snapshot.key as String,
+                                          outlet: order['outlet'],
+                                          status: order['status'],
+                                          rider: order['RiderMail'])));
                             },
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,4 +74,4 @@ class _DispatchOrdersState extends State<DispatchOrders> {
       ),
     );
   }
-  }
+}

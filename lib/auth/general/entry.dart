@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:newama2/auth/test.dart';
+import 'package:flutter/services.dart';
+import 'maps_location_picker.dart';
+import 'package:snippet_coder_utils/FormHelper.dart';
 
 class Entries extends StatefulWidget {
   const Entries({super.key});
@@ -12,6 +15,10 @@ class Entries extends StatefulWidget {
 }
 
 class _EntriesState extends State<Entries> {
+  String address = "null";
+  String autocompletePlace = "null";
+  Prediction? initialValue;
+  final TextEditingController _controller = TextEditingController();
   final TextEditingController __productNameController = TextEditingController();
   final TextEditingController __productQuantityController =
       TextEditingController();
@@ -27,24 +34,34 @@ class _EntriesState extends State<Entries> {
   final dataseRef = FirebaseDatabase.instance.ref();
   final User? user = FirebaseAuth.instance.currentUser;
   String store = '';
+  List<dynamic> stores = [];
+  String? storeId;
 
   @override
-  void initState(){
-    AwesomeNotifications().isNotificationAllowed().then((isAllowed){
-      if(!isAllowed){
+  void initState() {
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
         AwesomeNotifications().requestPermissionToSendNotifications();
       }
     });
     super.initState();
+    this
+        .stores
+        .add({"id": "Naivas Gateway Mall", "label": "Naivas Gateway Mall"});
+    this
+        .stores
+        .add({"id": "Naivas Mountain Mall", "label": "Naivas Mountain Mall"});
+    this.stores.add({"id": "Naivas Spur Mall", "label": "Naivas Spur Mall"});
+    this.stores.add({"id": "Naivas CIATA Mall", "label": "Naivas CIATA Mall"});
   }
-  triggerNotification(){
+
+  triggerNotification() {
     AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: 10, 
-        channelKey: 'Newama_delivery',
-        title: 'New Order Made',
-        body: 'You have a new order'
-        ));
+        content: NotificationContent(
+            id: 10,
+            channelKey: 'Newama_delivery',
+            title: 'New Order Made',
+            body: 'You have a new order'));
   }
 
   @override
@@ -52,7 +69,9 @@ class _EntriesState extends State<Entries> {
     if (user?.email == 'naivasmountainmall@gmail.com') {
       store = 'Naivas Mountain Mall';
     } else if (user?.email == 'naivasgatewaymall@gmail.com') {
-      store = 'Naivas Gateway Malll';
+      store = 'Naivas Gateway Mall';
+    } else if (user?.email == 'naivasciata@gmail.com') {
+      store = 'Naivas Ciata Mall';
     } else {
       store = 'No Store Selected';
     }
@@ -65,8 +84,8 @@ class _EntriesState extends State<Entries> {
               decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Color.fromARGB(255, 119, 194, 255),
-                      Color.fromARGB(255, 1, 62, 112),
+                      Color.fromARGB(255, 0, 31, 97),
+                      Color.fromARGB(255, 151, 151, 151),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -88,28 +107,42 @@ class _EntriesState extends State<Entries> {
                       style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.w800,
-                          color: Colors.red),
+                          color: Color.fromARGB(255, 237, 18, 2)),
                     ),
                     const SizedBox(
                       height: 20,
                     ),
-                    Text(
-                      'Store: $store',
-                      style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          child: SizedBox(
+                            width: 250,
+                            child: FormHelper.dropDownWidget(
+                              context,
+                              "Select Store",
+                              this.storeId,
+                              this.stores,
+                              (onChangedVal) {
+                                this.storeId = onChangedVal;
+                              },
+                              (onValidateVal) {
+                                return null;
+                              },
+                              borderColor:
+                                  const Color.fromARGB(255, 158, 11, 0),
+                              borderFocusColor: Color.fromARGB(255, 158, 11, 0),
+                              borderRadius: 10,
+                              optionValue: "id",
+                              optionLabel: "label",
+                            ),
+                          ),
+                        ),
+                      ],
                     )
                   ],
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text(
-              'Enter Order details below',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             ),
             const SizedBox(
               height: 20,
@@ -119,18 +152,33 @@ class _EntriesState extends State<Entries> {
               child: Column(
                 children: [
                   Row(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                        child: const Text(
+                          'Enter Order details below',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       SizedBox(
                         height: 50,
-                        width: 100,
+                        width: 130,
                         child: TextField(
                           controller: __orderId,
                           decoration: InputDecoration(
                               enabledBorder: const OutlineInputBorder(
                                   borderSide: BorderSide(
                                 width: 1,
-                                color: Colors.blue,
+                                color: Color.fromARGB(255, 0, 43, 78),
                               )),
                               labelText: 'Order ID',
                               border: OutlineInputBorder(
@@ -140,14 +188,14 @@ class _EntriesState extends State<Entries> {
                       ),
                       SizedBox(
                         height: 50,
-                        width: 150,
+                        width: 180,
                         child: TextField(
                           controller: __productNameController,
                           decoration: InputDecoration(
                               enabledBorder: const OutlineInputBorder(
                                   borderSide: BorderSide(
                                 width: 1,
-                                color: Colors.blue,
+                                color: Color.fromARGB(255, 0, 43, 78),
                               )),
                               labelText: 'Order Description',
                               border: OutlineInputBorder(
@@ -165,14 +213,14 @@ class _EntriesState extends State<Entries> {
                     children: [
                       SizedBox(
                         height: 50,
-                        width: 100,
+                        width: 130,
                         child: TextField(
                           controller: __productQuantityController,
                           decoration: InputDecoration(
                               enabledBorder: const OutlineInputBorder(
                                   borderSide: BorderSide(
                                 width: 1,
-                                color: Colors.blue,
+                                color: Color.fromARGB(255, 0, 43, 78),
                               )),
                               labelText: 'Quantity',
                               border: OutlineInputBorder(
@@ -182,14 +230,14 @@ class _EntriesState extends State<Entries> {
                       ),
                       SizedBox(
                         height: 50,
-                        width: 150,
+                        width: 180,
                         child: TextField(
                           controller: __priceController,
                           decoration: InputDecoration(
                               enabledBorder: const OutlineInputBorder(
                                   borderSide: BorderSide(
                                 width: 1,
-                                color: Colors.blue,
+                                color: Color.fromARGB(255, 0, 43, 78),
                               )),
                               labelText: 'Order Price',
                               border: OutlineInputBorder(
@@ -202,165 +250,249 @@ class _EntriesState extends State<Entries> {
                   const SizedBox(
                     height: 20,
                   ),
-                  const Text(
-                    'Enter Customer details below',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      SizedBox(
-                        height: 50,
-                        width: 130,
-                        child: TextField(
-                          controller: __customerNameController,
-                          decoration: InputDecoration(
-                              enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                width: 1,
-                                color: Colors.blue,
-                              )),
-                              labelText: 'Name',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              )),
+                  Container(
+                    margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            const Text(
+                              'Enter Customer details below',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w500),
+                            ),
+                          ],
                         ),
-                      ),
-                      SizedBox(
-                        height: 50,
-                        width: 150,
-                        child: TextField(
-                          controller: __customerContacts,
-                          decoration: InputDecoration(
-                              enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                width: 1,
-                                color: Colors.blue,
-                              )),
-                              labelText: 'Phone number',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              )),
+                        const SizedBox(
+                          height: 20,
                         ),
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      SizedBox(
-                        height: 50,
-                        width: 130,
-                        child: TextField(
-                          controller: __townController,
-                          decoration: InputDecoration(
-                              enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                width: 1,
-                                color: Colors.blue,
-                              )),
-                              labelText: 'Town/Area',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              )),
+                        Row(
+                          children: [
+                            SizedBox(
+                              height: 50,
+                              width: 350,
+                              child: TextField(
+                                controller: __customerNameController,
+                                decoration: InputDecoration(
+                                    enabledBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                      width: 1,
+                                      color: Color.fromARGB(255, 0, 43, 78),
+                                    )),
+                                    labelText: 'Name',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    )),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      SizedBox(
-                        height: 50,
-                        width: 150,
-                        child: TextField(
-                          controller: __customerStreet,
-                          decoration: InputDecoration(
-                              enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                width: 1,
-                                color: Colors.blue,
-                              )),
-                              labelText: 'Building/Nearest Landmark',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              )),
+                        const SizedBox(
+                          height: 10,
                         ),
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
+                        Row(
+                          children: [
+                            SizedBox(
+                              height: 50,
+                              width: 350,
+                              child: TextField(
+                                controller: __customerContacts,
+                                decoration: InputDecoration(
+                                    enabledBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                      width: 1,
+                                      color: Color.fromARGB(255, 0, 43, 78),
+                                    )),
+                                    labelText: 'Phone number',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    )),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              height: 50,
+                              width: 350,
+                              child: TextField(
+                                controller: __customerStreet,
+                                decoration: InputDecoration(
+                                    enabledBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                      width: 1,
+                                      color: Color.fromARGB(255, 0, 43, 78),
+                                    )),
+                                    labelText: 'Building/Nearest Landmark',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    )),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          children: [
+                            Text("Location: $autocompletePlace"),
+                          ],
+                        ),
+                        Row(children: [
+                          ElevatedButton(
+                            child: const Text('Pick location'),
+                            onPressed: () async {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return MapLocationPicker(
+                                      apiKey:
+                                          "AIzaSyBz5gDJdtUJg9GdmeN2VwNcMMrf-0K1tqQ",
+                                      canPopOnNextButtonTaped: true,
+                                      currentLatLng:
+                                          const LatLng(29.121599, 76.396698),
+                                      onNext: (GeocodingResult? result) {
+                                        if (result != null) {
+                                          setState(() {
+                                            address =
+                                                result.formattedAddress ?? "";
+                                          });
+                                        }
+                                      },
+                                      onSuggestionSelected:
+                                          (PlacesDetailsResponse? result) {
+                                        if (result != null) {
+                                          setState(() {
+                                            autocompletePlace = result
+                                                    .result.formattedAddress ??
+                                                "";
+                                          });
+                                        }
+                                      },
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                        ]),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                      ],
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              primary: Colors.blue,
+                              primary: const Color.fromARGB(255, 0, 54, 99),
                               padding: EdgeInsets.all(15)),
                           onPressed: () {
-                            if (__orderId.text.isEmpty &&
-                                __productNameController.text.isEmpty &&
-                                __productQuantityController.text.isEmpty &&
-                                __priceController.text.isEmpty &&
-                                __customerNameController.text.isEmpty &&
-                                __customerContacts.text.isEmpty &&
-                                __townController.text.isEmpty &&
-                                __customerStreet.text.isEmpty) {
+                            if (autocompletePlace == 'null') {
                               showDialog(
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      title: Text('Entry Error!'),
-                                      content: Text('Áll Fields are required'),
+                                      title: Text('Location Error'),
+                                      content: Text('Pick location'),
                                       actions: [
                                         ElevatedButton(
                                             onPressed: () {
                                               Navigator.pop(context);
                                             },
-                                            child: Text('Close'))
+                                            child: Text('OK'))
                                       ],
                                     );
                                   });
-                            }
-                            else{
-                              insertOrder(__orderId.text, __productNameController.text, __priceController.text, 
-                              __productQuantityController.text);
-                              insertCustomerDetails(__customerNameController.text, __customerContacts.text, __townController.text, 
-                              __customerStreet.text);
-                              triggerNotification();
+                            } else {
+                              if (storeId!.isEmpty &&
+                                  __orderId.text.isEmpty &&
+                                  __productNameController.text.isEmpty &&
+                                  __productQuantityController.text.isEmpty &&
+                                  __priceController.text.isEmpty &&
+                                  __customerNameController.text.isEmpty &&
+                                  __customerContacts.text.isEmpty &&
+                                  __townController.text.isEmpty &&
+                                  __customerStreet.text.isEmpty) {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: Text('Entry Error!'),
+                                        content:
+                                            Text('Áll Fields are required'),
+                                        actions: [
+                                          ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text('Close'))
+                                        ],
+                                      );
+                                    });
+                              } else {
+                                insertOrder(
+                                    __orderId.text,
+                                    __productNameController.text,
+                                    __priceController.text,
+                                    __productQuantityController.text);
+                                insertCustomerDetails(
+                                    __customerNameController.text,
+                                    __customerContacts.text,
+                                    autocompletePlace,
+                                    __customerStreet.text);
+                                triggerNotification();
 
-                                  changeOrderStatus(
-                                'Pending',
-                                store,
-                                DateTime.now()
-                                    .millisecondsSinceEpoch
-                                    .toString());
+                                changeOrderStatus(
+                                    'Pending',
+                                    storeId!,
+                                    DateTime.now()
+                                        .millisecondsSinceEpoch
+                                        .toString());
 
-                                showDialog(context: context, builder: (context){
-                                  return AlertDialog(
-                                    title: Text('Successful Entry'),
-                                    content: Text('Order ${__orderId.text} was successfully entered'),
-                                    actions: [
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Colors.blue
-                                        ),
-                                        onPressed: (){
-                                        clearText();
-                                        Navigator.pop(context);
-
-                                      }, 
-                                      child: Text('Next Order')),
-                                      ElevatedButton(onPressed: (){
-                                        FirebaseAuth.instance.signOut();
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => const Test()));
-                                      }, child: Text('Exit'))
-                                    ],
-                                  );
-                                });  
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: Text('Successful Entry'),
+                                        content: Text(
+                                            'Order ${__orderId.text} was successfully entered'),
+                                        actions: [
+                                          ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                  primary: const Color.fromARGB(
+                                                      255, 0, 48, 88)),
+                                              onPressed: () {
+                                                clearText();
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text('Next Order')),
+                                          ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      Color.fromARGB(
+                                                          255, 185, 12, 0)),
+                                              onPressed: () {
+                                                FirebaseAuth.instance.signOut();
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const Test()));
+                                              },
+                                              child: Text('Exit'))
+                                        ],
+                                      );
+                                    });
+                              }
                             }
                           },
                           child: const Text(
@@ -369,7 +501,9 @@ class _EntriesState extends State<Entries> {
                           )),
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.all(15)),
+                              padding: EdgeInsets.all(15),
+                              backgroundColor:
+                                  const Color.fromARGB(255, 171, 11, 0)),
                           onPressed: () {
                             FirebaseAuth.instance.signOut();
                             Navigator.push(
@@ -392,8 +526,7 @@ class _EntriesState extends State<Entries> {
     );
   }
 
-
-    void changeOrderStatus(String status, String outlet, var postTime) {
+  void changeOrderStatus(String status, String outlet, var postTime) {
     dataseRef
         .child("Orders/${__orderId.text}")
         .update({"status": status, "outlet": outlet, "postTime": postTime});
@@ -404,14 +537,12 @@ class _EntriesState extends State<Entries> {
     String itemName,
     String itemPrice,
     String itemQuantity,
-    
   ) {
     dataseRef.child("Orders").child("${__orderId.text}/items").push().set({
       'orderId': orderId,
       'Item': itemName,
       'Price': itemPrice,
       'Quantity': itemQuantity,
-      
     });
   }
 
@@ -439,7 +570,8 @@ class _EntriesState extends State<Entries> {
       'Landmark': street,
     });
   }
-  void clearText(){
+
+  void clearText() {
     __productNameController.clear();
     __orderId.clear();
     __productQuantityController.clear();

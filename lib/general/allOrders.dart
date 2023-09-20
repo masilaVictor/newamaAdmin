@@ -3,6 +3,8 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:newama2/general/dashboard.dart';
+import 'package:newama2/general/deli.dart';
+import 'package:newama2/general/order.dart';
 import 'package:newama2/general/orderView.dart';
 import 'package:newama2/general/ordersDate.dart';
 
@@ -28,7 +30,7 @@ class _AllOrdersState extends State<AllOrders> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('All Orders'),
-        backgroundColor: const Color.fromARGB(255, 3, 83, 148),
+        backgroundColor: Color.fromARGB(255, 35, 40, 44),
         automaticallyImplyLeading: false,
         leading: IconButton(
             onPressed: () {
@@ -39,7 +41,7 @@ class _AllOrdersState extends State<AllOrders> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.fromLTRB(10, 30, 10, 10),
+          margin: EdgeInsets.fromLTRB(0, 30, 0, 10),
           child: Column(
             children: [
               Row(
@@ -86,7 +88,7 @@ class _AllOrdersState extends State<AllOrders> {
                               color: order['status'] == 'Pending'
                                   ? Color.fromARGB(255, 255, 17, 0)
                                   : order['status'] == 'Processing'
-                                      ? Colors.blue
+                                      ? const Color.fromARGB(255, 0, 45, 82)
                                       : order['status'] == 'Transit'
                                           ? const Color.fromARGB(
                                               255, 102, 92, 0)
@@ -98,13 +100,24 @@ class _AllOrdersState extends State<AllOrders> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => OrdersView(
-                                              orderno: snapshot.key as String,
-                                              outlet: order['outlet'],
-                                              status: order['status'])));
+                                  if (order['status'] == 'Pending') {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => OrderPage(
+                                                orderno: snapshot.key as String,
+                                                outlet: order['outlet'],
+                                                status: order['status'])));
+                                  } else {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => DeliPage(
+                                                orderno: snapshot.key as String,
+                                                outlet: order['outlet'],
+                                                rider: order['RiderMail'],
+                                                status: order['status'])));
+                                  }
                                 },
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,

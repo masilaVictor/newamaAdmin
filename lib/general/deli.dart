@@ -1,30 +1,30 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
-import 'package:newama2/general/allOrders.dart';
-import 'package:newama2/general/dashboard.dart';
-import 'package:newama2/general/order.dart';
 
-class OrdersView extends StatefulWidget {
+class DeliPage extends StatefulWidget {
   String orderno;
   String outlet;
   String status;
-  OrdersView(
+  String rider;
+  DeliPage(
       {super.key,
       required this.orderno,
       required this.outlet,
-      required this.status});
+      required this.status,
+      required this.rider});
 
   @override
-  State<OrdersView> createState() => _OrdersViewState(orderno, outlet, status);
+  State<DeliPage> createState() =>
+      _DeliPageState(orderno, outlet, status, rider);
 }
 
-class _OrdersViewState extends State<OrdersView> {
+class _DeliPageState extends State<DeliPage> {
   String orderno;
   String outlet;
   String status;
-  final dataseRef = FirebaseDatabase.instance.ref();
-  _OrdersViewState(this.orderno, this.outlet, this.status);
+  String rider;
+  _DeliPageState(this.orderno, this.outlet, this.status, this.rider);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,8 @@ class _OrdersViewState extends State<OrdersView> {
         .child('Orders/${orderno}/customerDetails');
     Query dbRef2 =
         FirebaseDatabase.instance.ref().child('Orders/${orderno}/items');
-    Query dbRef3 = FirebaseDatabase.instance.ref().child('Orders/${orderno}');
+    Query dbRef3 =
+        FirebaseDatabase.instance.ref().child('Assignments/${orderno}');
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -123,6 +124,8 @@ class _OrdersViewState extends State<OrdersView> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 'Area: ${orders['Area']}',
@@ -132,13 +135,26 @@ class _OrdersViewState extends State<OrdersView> {
                                                     fontWeight:
                                                         FontWeight.w500),
                                               ),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    'Landmark: ${orders['Landmark']}',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
                                               Text(
-                                                'Landmark: ${orders['Landmark']}',
+                                                "Rider: ${rider}",
                                                 style: TextStyle(
                                                     color: Colors.white,
-                                                    fontSize: 15,
-                                                    fontWeight:
-                                                        FontWeight.w500),
+                                                    fontSize: 15),
                                               ),
                                             ],
                                           ),
@@ -213,59 +229,6 @@ class _OrdersViewState extends State<OrdersView> {
                                 );
                               }),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ElevatedButton(
-                                onPressed: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          title: Text('WARNING'),
-                                          content: Text(
-                                              'Proceeding will Cancel delivery process'),
-                                          actions: [
-                                            ElevatedButton(
-                                                onPressed: () {
-                                                  updateOrder(
-                                                      'Cancelled',
-                                                      DateTime.now()
-                                                          .millisecondsSinceEpoch
-                                                          .toString(),
-                                                      '0');
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              Dashboard()));
-                                                },
-                                                child: Text('Proceed')),
-                                            ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Text('Back'))
-                                          ],
-                                        );
-                                      });
-                                },
-                                child: Text('Cancel')),
-                            ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.blue),
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => OrderPage(
-                                              orderno: orderno as String,
-                                              outlet: outlet,
-                                              status: status)));
-                                },
-                                child: Text('Reassign'))
-                          ],
-                        )
                       ],
                     ),
                   ),
@@ -276,12 +239,5 @@ class _OrdersViewState extends State<OrdersView> {
         ),
       ),
     );
-  }
-
-  void updateOrder(String status, var CancelTime, String distance) {
-    dataseRef.child('Orders').child('${orderno}').update(
-        {'status': status, 'DeliveryTime': CancelTime, "Distance": distance});
-    dataseRef.child('Assignments').child('${orderno}').update(
-        {'status': status, 'DeliveryTime': CancelTime, "Distance": distance});
   }
 }

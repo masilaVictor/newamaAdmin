@@ -2,10 +2,10 @@
     package="com.example.newama2">
     <application
         android:label="Newama Delivery"
-        android:name="${applicationName}"
+        
         android:icon="@mipmap/launcher_icon">
         <activity
-            android:name=".MainActivity"
+            android:name="io.flutter.embedding.android.FlutterActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
@@ -30,5 +30,7 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBz5gDJdtUJg9GdmeN2VwNcMMrf-0K1tqQ"/>
     </application>
 </manifest>

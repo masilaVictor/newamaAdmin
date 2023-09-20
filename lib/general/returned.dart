@@ -29,7 +29,7 @@ class _ReturnedOrdersState extends State<ReturnedOrders> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Returned Orders'),
-        backgroundColor: const Color.fromARGB(255, 3, 83, 148),
+        backgroundColor: Color.fromARGB(255, 35, 40, 44),
         automaticallyImplyLeading: false,
         leading: IconButton(
             onPressed: () {
@@ -47,7 +47,7 @@ class _ReturnedOrdersState extends State<ReturnedOrders> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    'Date: $end - $selectedDate',
+                    'Date: $selectedDate',
                     style: TextStyle(fontSize: 17),
                   ),
                   ElevatedButton(

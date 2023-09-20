@@ -19,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.fromLTRB(0, 0, 0, 30),
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 110),
           decoration: BoxDecoration(
             color: Color.fromARGB(255, 225, 240, 248),
           ),
@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                     color: Colors.white,
@@ -80,28 +80,49 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                primary: Colors.blue,
+                                primary: Color.fromARGB(255, 2, 34, 60),
                                 padding: EdgeInsets.all(12)),
                             onPressed: () {
                               if (_emailController.text.isNotEmpty &&
                                   _passwordController.text.isNotEmpty) {
-                                FirebaseAuth.instance
-                                    .signInWithEmailAndPassword(
-                                        email: _emailController.text,
-                                        password: _passwordController.text)
-                                    .then((value) {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => Entries()));
-                                }).onError((error, stackTrace) {
+                                if (_emailController.text ==
+                                    'naivasoutlets@newamadelivery.co.ke') {
+                                  FirebaseAuth.instance
+                                      .signInWithEmailAndPassword(
+                                          email: _emailController.text,
+                                          password: _passwordController.text)
+                                      .then((value) {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => Entries()));
+                                  }).onError((error, stackTrace) {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: const Text('Login Error'),
+                                            content: const Text(
+                                                'Email/Password Combination do not match! Try Again'),
+                                            actions: [
+                                              ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text('Close'))
+                                            ],
+                                          );
+                                        });
+                                  });
+                                } else {
                                   showDialog(
                                       context: context,
                                       builder: (context) {
                                         return AlertDialog(
-                                          title: const Text('Login Error'),
+                                          title: const Text(
+                                              'PERMISSION NOT GRANTED'),
                                           content: const Text(
-                                              'Email/Password Combination do not match! Try Again'),
+                                              'You do not have permission permission to proceed!Contact Admin'),
                                           actions: [
                                             ElevatedButton(
                                                 onPressed: () {
@@ -111,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                                           ],
                                         );
                                       });
-                                });
+                                }
                               } else {
                                 showDialog(
                                     context: context,
@@ -137,7 +158,9 @@ class _LoginPageState extends State<LoginPage> {
                             )),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.all(12)),
+                                padding: EdgeInsets.all(12),
+                                backgroundColor:
+                                    const Color.fromARGB(255, 148, 10, 0)),
                             onPressed: () {
                               Navigator.push(
                                   context,

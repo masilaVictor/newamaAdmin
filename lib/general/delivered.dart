@@ -3,6 +3,7 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:newama2/general/dashboard.dart';
+import 'package:newama2/general/deli.dart';
 import 'package:newama2/general/deliveredDate.dart';
 import 'package:newama2/general/orderView.dart';
 import 'package:newama2/general/ordersDate.dart';
@@ -13,7 +14,8 @@ class DeliveredOrders extends StatefulWidget {
   DeliveredOrders({super.key, required this.selectedDate, required this.end});
 
   @override
-  State<DeliveredOrders> createState() => _DeliveredOrdersState(selectedDate, end);
+  State<DeliveredOrders> createState() =>
+      _DeliveredOrdersState(selectedDate, end);
 }
 
 class _DeliveredOrdersState extends State<DeliveredOrders> {
@@ -27,7 +29,7 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Delivered Orders'),
-        backgroundColor: const Color.fromARGB(255, 3, 83, 148),
+        backgroundColor: Color.fromARGB(255, 35, 40, 44),
         automaticallyImplyLeading: false,
         leading: IconButton(
             onPressed: () {
@@ -38,14 +40,14 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.fromLTRB(10, 30, 10, 10),
+          margin: EdgeInsets.fromLTRB(0, 30, 0, 10),
           child: Column(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    'Date: $end - $selectedDate',
+                    'Date: $selectedDate',
                     style: TextStyle(fontSize: 17),
                   ),
                   ElevatedButton(
@@ -61,7 +63,7 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
                 ],
               ),
               SizedBox(
-                height: 500,
+                height: 570,
                 child: FirebaseAnimatedList(
                     query: dbRef.orderByChild('status').equalTo('Delivered'),
                     itemBuilder: (BuildContext context, DataSnapshot snapshot,
@@ -74,10 +76,8 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
                           int.parse(order['postTime']));
                       var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
 
-                      if ((TAS3.compareTo(end) != -1) &&
-                          TAS3.compareTo(selectedDate) == 0) {
+                      if (TAS3.compareTo(selectedDate) == 0) {
                         //allOrders.add(index);
-                        
 
                         return Container(
                           margin: const EdgeInsets.all(10),
@@ -90,14 +90,22 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
                                       : order['status'] == 'Transit'
                                           ? Colors.yellow
                                           : order['status'] == 'Delivered'
-                                              ? Colors.green
+                                              ? const Color.fromARGB(
+                                                  255, 1, 115, 5)
                                               : Color.fromARGB(80, 126, 1, 42),
                               borderRadius: BorderRadius.circular(10)),
                           child: Row(
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                   Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersView(orderno: snapshot.key as String, outlet: order['outlet'], status: order['status'])));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => DeliPage(
+                                              orderno: snapshot.key as String,
+                                              outlet: order['outlet'],
+                                              rider: order['RiderMail'],
+                                              status: order['status'])));
                                 },
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,11 +143,10 @@ class _DeliveredOrdersState extends State<DeliveredOrders> {
                       }
                     }),
               ),
-              
             ],
           ),
         ),
       ),
     );
   }
-  }
+}

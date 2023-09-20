@@ -35,7 +35,7 @@ class _AdminLoginState extends State<AdminLogin> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                margin: EdgeInsets.fromLTRB(10, 0, 10, 110),
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                     color: Colors.white,
@@ -84,23 +84,47 @@ class _AdminLoginState extends State<AdminLogin> {
                             onPressed: () {
                               if (_emailController.text.isNotEmpty &&
                                   _passwordController.text.isNotEmpty) {
-                                FirebaseAuth.instance
-                                    .signInWithEmailAndPassword(
-                                        email: _emailController.text,
-                                        password: _passwordController.text)
-                                    .then((value) {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => const Dashboard()));
-                                }).onError((error, stackTrace) {
+                                if (_emailController.text ==
+                                        'newamaadmin@newamadelivery.co.ke' ||
+                                    _emailController.text ==
+                                        'margaret.kamau92@gmail.com') {
+                                  FirebaseAuth.instance
+                                      .signInWithEmailAndPassword(
+                                          email: _emailController.text,
+                                          password: _passwordController.text)
+                                      .then((value) {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const Dashboard()));
+                                  }).onError((error, stackTrace) {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: const Text('Login Error'),
+                                            content: const Text(
+                                                'Email/Password Combination do not match! Try Again'),
+                                            actions: [
+                                              ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text('Close'))
+                                            ],
+                                          );
+                                        });
+                                  });
+                                } else {
                                   showDialog(
                                       context: context,
                                       builder: (context) {
                                         return AlertDialog(
-                                          title: const Text('Login Error'),
+                                          title: const Text(
+                                              'PERMISSION NOT GRANTED'),
                                           content: const Text(
-                                              'Email/Password Combination do not match! Try Again'),
+                                              'You do not have permission permission to proceed!Contact Admin'),
                                           actions: [
                                             ElevatedButton(
                                                 onPressed: () {
@@ -110,7 +134,7 @@ class _AdminLoginState extends State<AdminLogin> {
                                           ],
                                         );
                                       });
-                                });
+                                }
                               } else {
                                 showDialog(
                                     context: context,
@@ -157,6 +181,5 @@ class _AdminLoginState extends State<AdminLogin> {
         ),
       ),
     );
-    
   }
 }

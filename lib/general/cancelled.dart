@@ -30,7 +30,7 @@ class _CancelledOrdersState extends State<CancelledOrders> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cancelled Orders'),
-        backgroundColor: const Color.fromARGB(255, 3, 83, 148),
+        backgroundColor: Color.fromARGB(255, 35, 40, 44),
         automaticallyImplyLeading: false,
         leading: IconButton(
             onPressed: () {
@@ -41,14 +41,14 @@ class _CancelledOrdersState extends State<CancelledOrders> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.fromLTRB(10, 30, 10, 10),
+          margin: EdgeInsets.fromLTRB(0, 30, 0, 10),
           child: Column(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    'Date: $end - $selectedDate',
+                    'Date: $selectedDate',
                     style: TextStyle(fontSize: 17),
                   ),
                   ElevatedButton(

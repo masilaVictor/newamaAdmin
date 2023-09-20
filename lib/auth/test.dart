@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:newama2/auth/admin.dart';
+import 'package:newama2/auth/general/entry.dart';
 import 'package:newama2/auth/login.dart';
+import 'package:newama2/general/dashboard.dart';
 
 class Test extends StatefulWidget {
   const Test({super.key});
@@ -10,6 +13,7 @@ class Test extends StatefulWidget {
 }
 
 class _TestState extends State<Test> {
+  final User? user = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -43,23 +47,34 @@ class _TestState extends State<Test> {
                       children: [
                         Image.asset('assets/images/rider.png'),
                         Container(
-                          margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                          margin: EdgeInsets.fromLTRB(60, 0, 60, 0),
                           transform: Matrix4.translationValues(0, -60, 0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               ElevatedButton(
-                                
                                 style: ElevatedButton.styleFrom(
-                                    primary: Colors.blue,
-                                    
-                                    ),
+                                    primary:
+                                        const Color.fromARGB(255, 1, 23, 42),
+                                    padding: EdgeInsets.all(10)),
                                 onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const LoginPage()));
+                                  FirebaseAuth.instance
+                                      .authStateChanges()
+                                      .listen((User? user) {
+                                    if (user == null) {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const LoginPage()));
+                                    } else {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const Entries()));
+                                    }
+                                  });
                                 },
                                 child: Text(
                                   'Store Panel',
@@ -67,8 +82,28 @@ class _TestState extends State<Test> {
                                 ),
                               ),
                               ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      padding: EdgeInsets.all(10),
+                                      backgroundColor:
+                                          const Color.fromARGB(255, 134, 9, 0)),
                                   onPressed: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminLogin()));
+                                    FirebaseAuth.instance
+                                        .authStateChanges()
+                                        .listen((User? user) {
+                                      if (user == null) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const AdminLogin()));
+                                      } else {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const Dashboard()));
+                                      }
+                                    });
                                   },
                                   child: Text('Admin',
                                       style: TextStyle(fontSize: 22)))

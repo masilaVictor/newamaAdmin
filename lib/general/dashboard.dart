@@ -44,8 +44,8 @@ class _DashboardState extends State<Dashboard> {
               decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Color.fromARGB(255, 119, 194, 255),
-                      Color.fromARGB(255, 1, 62, 112),
+                      Color.fromARGB(255, 50, 50, 50),
+                      Color.fromARGB(255, 151, 151, 151),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -74,7 +74,7 @@ class _DashboardState extends State<Dashboard> {
                         ),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              primary: Color.fromARGB(255, 119, 194, 255),
+                              primary: Color.fromARGB(255, 95, 9, 9),
                             ),
                             onPressed: () {
                               FirebaseAuth.instance.signOut();
@@ -287,7 +287,7 @@ class _DashboardState extends State<Dashboard> {
                           ),
                           child: SizedBox(
                             width: double.infinity,
-                            height: 140,
+                            height: 170,
                             child: Column(
                               children: [
                                 Row(
@@ -430,7 +430,7 @@ class _DashboardState extends State<Dashboard> {
                           ),
                           child: SizedBox(
                             width: double.infinity,
-                            height: 140,
+                            height: 170,
                             child: Column(
                               children: [
                                 Row(
@@ -572,7 +572,7 @@ class _DashboardState extends State<Dashboard> {
                           ),
                           child: SizedBox(
                             width: double.infinity,
-                            height: 140,
+                            height: 170,
                             child: Column(
                               children: [
                                 Row(

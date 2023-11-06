@@ -3,6 +3,8 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:newama2/general/dashboard.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class OrderPage extends StatefulWidget {
   String orderno;
@@ -23,6 +25,8 @@ class _OrderPageState extends State<OrderPage> {
   String outlet;
   String status;
   List<dynamic> riders = [];
+  List thisOrder = [];
+  var isLoaded = false;
 
   String? riderId;
   _OrderPageState(this.orderno, this.outlet, this.status);
@@ -30,6 +34,7 @@ class _OrderPageState extends State<OrderPage> {
   @override
   void initState() {
     super.initState();
+    getThisOrder();
     this
         .riders
         .add({"id": "philipkip@gmail.com", "label": "Philip Kip(0706034707)"});
@@ -44,18 +49,48 @@ class _OrderPageState extends State<OrderPage> {
         {"id": "jothamngota@gmail.com", "label": "Jotham Ngota(0723239589)"});
     this.riders.add(
         {"id": "bonfaceweru@gmail.com", "label": "Bonface Weru(0101488568)"});
-    this
-        .riders
-        .add({"id": "franklin@gmail.com", "label": "Franklin(0706454249)"});
+    this.riders.add(
+        {"id": "davidivuthah@gmail.com", "label": "David Ivuthah(0712673243)"});
     this
         .riders
         .add({"id": "johnk@gmail.com", "label": "John Kingori(0748012051)"});
-    this.riders.add(
-        {"id": "godfreyjuma@gmail.com", "label": "Godfrey Jume(0714239294)"});
+    this
+        .riders
+        .add({"id": "abelsakwa@gmail.com", "label": "Abel Sakwa(0724386160)"});
     this.riders.add({
-      "id": "wycliffochieng@gmail.com",
-      "label": "Wycliff Ochieng(0724836975)"
+      "id": "anthonyrachel@gmail.com",
+      "label": "Anthony Rachel(0706242354)"
     });
+  }
+
+  getThisOrder() async {
+    final response = await http.get(Uri.parse(
+        "http://api.newamadelivery.co.ke/fetchOrder.php?orderId=${orderno}"));
+    setState(() {
+      thisOrder = json.decode(response.body);
+      isLoaded = true;
+    });
+  }
+
+  Future<void> updateThisOrder() async {
+    try {
+      final result1 = await http.post(
+          Uri.parse("http://api.newamadelivery.co.ke/updateOrder.php"),
+          body: {
+            "orderId": orderno,
+            "assignTime": DateTime.now().millisecondsSinceEpoch.toString(),
+            "rider": riderId as String,
+            "status": "Processing"
+          });
+      var response2 = jsonDecode(result1.body);
+      if (response2["success"] == "true") {
+        print("Order Updated Successfully");
+      } else {
+        print("Some issue occured");
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -92,15 +127,13 @@ class _OrderPageState extends State<OrderPage> {
                       margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
                       child: Column(
                         children: [
-                          Expanded(
-                            child: FirebaseAnimatedList(
-                                query: dbRef1,
-                                itemBuilder: (BuildContext context,
-                                    DataSnapshot snapshot,
-                                    Animation<double> animation,
-                                    int index) {
-                                  Map orders = snapshot.value as Map;
-                                  orders['key'] = snapshot.key;
+                          Visibility(
+                              visible: isLoaded,
+                              child: ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                itemCount: thisOrder?.length,
+                                itemBuilder: (context, index) {
                                   return Container(
                                     margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
                                     child: Column(
@@ -134,14 +167,14 @@ class _OrderPageState extends State<OrderPage> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              'Customer: ${orders['Customer']}',
+                                              'Customer: ${thisOrder![index]['customer']}',
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.w500),
                                             ),
                                             Text(
-                                              'Contacts: ${orders['Contacts']}',
+                                              'Contacts: ${thisOrder![index]['contact']}',
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 15,
@@ -157,17 +190,22 @@ class _OrderPageState extends State<OrderPage> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  'Area: ${orders['Area']}',
+                                                  'Area: ${thisOrder![index]['area']}',
                                                   style: TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 15,
                                                       fontWeight:
                                                           FontWeight.w500),
                                                 ),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
                                                 Text(
-                                                  'Landmark: ${orders['Landmark']}',
+                                                  'Landmark: ${thisOrder![index]['landmark']}',
                                                   style: TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 15,
@@ -178,75 +216,34 @@ class _OrderPageState extends State<OrderPage> {
                                             ),
                                           ],
                                         ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              'Items: ${thisOrder![index]['item']}',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                            Text(
+                                              'Value: Kes ${thisOrder![index]['price']}/=',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                          ],
+                                        )
                                       ],
                                     ),
                                   );
-                                }),
-                          ),
-                          const SizedBox(
-                            height: 0,
-                          ),
-                          Text(
-                            'Order Details',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 19,
-                                fontWeight: FontWeight.w500),
-                          ),
-                          Expanded(
-                            child: FirebaseAnimatedList(
-                                query: dbRef2,
-                                itemBuilder: (BuildContext context,
-                                    DataSnapshot snapshot,
-                                    Animation<double> animation,
-                                    int index) {
-                                  Map order = snapshot.value as Map;
-                                  order['key'] = snapshot.key;
-                                  return Column(
-                                    children: [
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Text(
-                                            'Order Description: ${order['Item']}',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w500),
-                                          ),
-                                          Text(
-                                            'Amount: Ksh.${order['Price']}',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w500),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Text(
-                                            'Quantity: ${order['Quantity']}',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w500),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  );
-                                }),
-                          ),
+                                },
+                              )),
                         ],
                       ),
                     ),
@@ -302,8 +299,29 @@ class _OrderPageState extends State<OrderPage> {
                                     ],
                                   );
                                 });
+                          } else {
+                            updateThisOrder();
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text('Assignment Successful'),
+                                    content:
+                                        Text('Notification sent to ${riderId}'),
+                                    actions: [
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const Dashboard()));
+                                          },
+                                          child: const Text('Close'))
+                                    ],
+                                  );
+                                });
                           }
-                          assignRider(orderno, riderId!, 'Pending', outlet);
                         },
                         child: const Text('Assign Rider'))
                   ],

@@ -6,6 +6,8 @@ import 'package:newama2/auth/test.dart';
 import 'package:flutter/services.dart';
 import 'maps_location_picker.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Entries extends StatefulWidget {
   const Entries({super.key});
@@ -52,7 +54,7 @@ class _EntriesState extends State<Entries> {
         .stores
         .add({"id": "Naivas Mountain Mall", "label": "Naivas Mountain Mall"});
     this.stores.add({"id": "Naivas Spur Mall", "label": "Naivas Spur Mall"});
-    this.stores.add({"id": "Naivas CIATA Mall", "label": "Naivas CIATA Mall"});
+    this.stores.add({"id": "Naivas Thindigwa", "label": "Naivas Thindigwa"});
   }
 
   triggerNotification() {
@@ -64,14 +66,45 @@ class _EntriesState extends State<Entries> {
             body: 'You have a new order'));
   }
 
+  Future<void> insertNewOrder() async {
+    if (__orderId.text != "") {
+      try {
+        final result = await http.post(
+            Uri.parse("http://api.newamadelivery.co.ke/insert.php"),
+            body: {
+              "orderId": __orderId.text,
+              "outlet": storeId!,
+              "item": __productNameController.text,
+              "price": __priceController.text,
+              "customer": __customerNameController.text,
+              "contacts": __customerContacts.text,
+              "area": autocompletePlace,
+              "landmark": __customerStreet.text,
+              "postTime": DateTime.now().millisecondsSinceEpoch.toString(),
+              "status": 'pending',
+            });
+        var response = jsonDecode(result.body);
+        if (response["success"] == "true") {
+          print("Records Added");
+        } else {
+          print("Some issue occured");
+        }
+      } catch (e) {
+        print(e);
+      }
+    } else {
+      print('All Fields are required!');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (user?.email == 'naivasmountainmall@gmail.com') {
       store = 'Naivas Mountain Mall';
     } else if (user?.email == 'naivasgatewaymall@gmail.com') {
       store = 'Naivas Gateway Mall';
-    } else if (user?.email == 'naivasciata@gmail.com') {
-      store = 'Naivas Ciata Mall';
+    } else if (user?.email == 'naivasthindigwa@gmail.com') {
+      store = 'Naivas Thindigwa';
     } else {
       store = 'No Store Selected';
     }
@@ -413,15 +446,7 @@ class _EntriesState extends State<Entries> {
                                     );
                                   });
                             } else {
-                              if (storeId!.isEmpty &&
-                                  __orderId.text.isEmpty &&
-                                  __productNameController.text.isEmpty &&
-                                  __productQuantityController.text.isEmpty &&
-                                  __priceController.text.isEmpty &&
-                                  __customerNameController.text.isEmpty &&
-                                  __customerContacts.text.isEmpty &&
-                                  __townController.text.isEmpty &&
-                                  __customerStreet.text.isEmpty) {
+                              if (__orderId.text.isEmpty) {
                                 showDialog(
                                     context: context,
                                     builder: (context) {
@@ -439,24 +464,26 @@ class _EntriesState extends State<Entries> {
                                       );
                                     });
                               } else {
-                                insertOrder(
-                                    __orderId.text,
-                                    __productNameController.text,
-                                    __priceController.text,
-                                    __productQuantityController.text);
-                                insertCustomerDetails(
-                                    __customerNameController.text,
-                                    __customerContacts.text,
-                                    autocompletePlace,
-                                    __customerStreet.text);
-                                triggerNotification();
+                                // insertOrder(
+                                //     __orderId.text,
+                                //     __productNameController.text,
+                                //     __priceController.text,
+                                //     __productQuantityController.text);
+                                // insertCustomerDetails(
+                                //     __customerNameController.text,
+                                //     __customerContacts.text,
+                                //     autocompletePlace,
+                                //     __customerStreet.text);
+                                // triggerNotification();
 
-                                changeOrderStatus(
-                                    'Pending',
-                                    storeId!,
-                                    DateTime.now()
-                                        .millisecondsSinceEpoch
-                                        .toString());
+                                // changeOrderStatus(
+                                //     'Pending',
+                                //     storeId!,
+                                //     DateTime.now()
+                                //         .millisecondsSinceEpoch
+                                //         .toString());
+
+                                insertNewOrder();
 
                                 showDialog(
                                     context: context,

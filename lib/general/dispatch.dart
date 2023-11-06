@@ -5,6 +5,8 @@ import 'package:newama2/general/dashboard.dart';
 import 'package:newama2/general/order.dart';
 import 'package:newama2/general/orderView.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class DispatchPage extends StatefulWidget {
   String orderno;
@@ -31,11 +33,14 @@ class _DispatchPageState extends State<DispatchPage> {
   String rider;
   String? riderId;
   List<dynamic> riders = [];
+  List thisOrder = [];
+  var isLoaded = false;
   _DispatchPageState(this.orderno, this.outlet, this.status, this.rider);
   final dataseRef = FirebaseDatabase.instance.ref();
   @override
   void initState() {
     super.initState();
+    getThisOrder();
     this
         .riders
         .add({"id": "philipkip@gmail.com", "label": "Philip Kip(0706034707)"});
@@ -50,18 +55,47 @@ class _DispatchPageState extends State<DispatchPage> {
         {"id": "jothamngota@gmail.com", "label": "Jotham Ngota(0723239589)"});
     this.riders.add(
         {"id": "bonfaceweru@gmail.com", "label": "Bonface Weru(0101488568)"});
-    this
-        .riders
-        .add({"id": "franklin@gmail.com", "label": "Franklin(0706454249)"});
+    this.riders.add(
+        {"id": "davidivuthah@gmail.com", "label": "David Ivuthah(0712673243)"});
     this
         .riders
         .add({"id": "johnk@gmail.com", "label": "John Kingori(0748012051)"});
-    this.riders.add(
-        {"id": "godfreyjuma@gmail.com", "label": "Godfrey Jume(0714239294)"});
+    this
+        .riders
+        .add({"id": "abelsakwa@gmail.com", "label": "Abel Sakwa(0724386160)"});
     this.riders.add({
-      "id": "wycliffochieng@gmail.com",
-      "label": "Wycliff Ochieng(0724836975)"
+      "id": "anthonyrachel@gmail.com",
+      "label": "Anthony Rachel(0706242354)"
     });
+  }
+
+  getThisOrder() async {
+    final response = await http.get(Uri.parse(
+        "http://api.newamadelivery.co.ke/fetchOrder.php?orderId=${orderno}"));
+    setState(() {
+      thisOrder = json.decode(response.body);
+      isLoaded = true;
+    });
+  }
+
+  Future<void> dispatchThisOrder() async {
+    try {
+      final result1 = await http.post(
+          Uri.parse("http://api.newamadelivery.co.ke/dispatchOrder.php"),
+          body: {
+            "orderId": orderno,
+            "dispatchTime": DateTime.now().millisecondsSinceEpoch.toString(),
+            "status": "Transit"
+          });
+      var response2 = jsonDecode(result1.body);
+      if (response2["success"] == "true") {
+        print("Order Updated Successfully");
+      } else {
+        print("Some issue occured");
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -98,16 +132,16 @@ class _DispatchPageState extends State<DispatchPage> {
                       margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
                       child: Column(
                         children: [
-                          Expanded(
-                            child: FirebaseAnimatedList(
-                                query: dbRef1,
-                                itemBuilder: (BuildContext context,
-                                    DataSnapshot snapshot,
-                                    Animation<double> animation,
-                                    int index) {
-                                  Map orders = snapshot.value as Map;
-                                  orders['key'] = snapshot.key;
-                                  return Column(
+                          Visibility(
+                            visible: isLoaded,
+                            child: ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              itemCount: thisOrder?.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                  child: Column(
                                     children: [
                                       Row(
                                         mainAxisAlignment:
@@ -138,14 +172,14 @@ class _DispatchPageState extends State<DispatchPage> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            'Customer: ${orders['Customer']}',
+                                            'Customer: ${thisOrder![index]['customer']}',
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 15,
                                                 fontWeight: FontWeight.w500),
                                           ),
                                           Text(
-                                            'Contacts: ${orders['Contacts']}',
+                                            'Contacts: ${thisOrder![index]['contact']}',
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 15,
@@ -154,22 +188,29 @@ class _DispatchPageState extends State<DispatchPage> {
                                         ],
                                       ),
                                       const SizedBox(
-                                        height: 10,
+                                        height: 15,
                                       ),
                                       Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                'Area: ${orders['Area']}',
+                                                'Area: ${thisOrder![index]['area']}',
                                                 style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 15,
                                                     fontWeight:
                                                         FontWeight.w500),
                                               ),
+                                              const SizedBox(
+                                                height: 15,
+                                              ),
                                               Text(
-                                                'Landmark: ${orders['Landmark']}',
+                                                'Landmark: ${thisOrder![index]['landmark']}',
                                                 style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 15,
@@ -180,83 +221,61 @@ class _DispatchPageState extends State<DispatchPage> {
                                           ),
                                         ],
                                       ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Items: ${thisOrder![index]['item']}',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          Text(
+                                            'Value: Kes ${thisOrder![index]['price']}/=',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Assigned To: ${thisOrder![index]['rider']}',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 15,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      )
                                     ],
-                                  );
-                                }),
+                                  ),
+                                );
+                              },
+                            ),
+                            replacement: CircularProgressIndicator(),
                           ),
                           const SizedBox(
-                            height: 0,
-                          ),
-                          Text(
-                            'Order Details',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 19,
-                                fontWeight: FontWeight.w500),
-                          ),
-                          Expanded(
-                            child: FirebaseAnimatedList(
-                                query: dbRef2,
-                                itemBuilder: (BuildContext context,
-                                    DataSnapshot snapshot,
-                                    Animation<double> animation,
-                                    int index) {
-                                  Map order = snapshot.value as Map;
-                                  order['key'] = snapshot.key;
-                                  return Column(
-                                    children: [
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Text(
-                                            'Order Description: ${order['Item']}',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w500),
-                                          ),
-                                          Text(
-                                            'Amount: Ksh.${order['Price']}',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w500),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Text(
-                                            'Quantity: ${order['Quantity']}',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w500),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      Text(
-                                        'Rider: ${rider}',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    ],
-                                  );
-                                }),
+                            height: 30,
                           ),
                           Container(
                             margin: EdgeInsets.fromLTRB(40, 0, 40, 10),
@@ -267,12 +286,7 @@ class _DispatchPageState extends State<DispatchPage> {
                                     style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.blue),
                                     onPressed: () {
-                                      updateDispatch(
-                                          'Transit',
-                                          DateTime.now()
-                                              .millisecondsSinceEpoch
-                                              .toString());
-                                      updateAssignment('Dispatched');
+                                      dispatchThisOrder();
                                       showDialog(
                                           context: context,
                                           builder: (context) {

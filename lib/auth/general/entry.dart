@@ -1,4 +1,4 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
+// import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -41,11 +41,11 @@ class _EntriesState extends State<Entries> {
 
   @override
   void initState() {
-    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-      if (!isAllowed) {
-        AwesomeNotifications().requestPermissionToSendNotifications();
-      }
-    });
+    // AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+    //   if (!isAllowed) {
+    //     AwesomeNotifications().requestPermissionToSendNotifications();
+    //   }
+    // });
     super.initState();
     this
         .stores
@@ -57,14 +57,14 @@ class _EntriesState extends State<Entries> {
     this.stores.add({"id": "Naivas Thindigwa", "label": "Naivas Thindigwa"});
   }
 
-  triggerNotification() {
-    AwesomeNotifications().createNotification(
-        content: NotificationContent(
-            id: 10,
-            channelKey: 'Newama_delivery',
-            title: 'New Order Made',
-            body: 'You have a new order'));
-  }
+  // triggerNotification() {
+  //   AwesomeNotifications().createNotification(
+  //       content: NotificationContent(
+  //           id: 10,
+  //           channelKey: 'Newama_delivery',
+  //           title: 'New Order Made',
+  //           body: 'You have a new order'));
+  // }
 
   Future<void> insertNewOrder() async {
     if (__orderId.text != "") {

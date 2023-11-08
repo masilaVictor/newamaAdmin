@@ -46,7 +46,7 @@ dependencies:
   date_format: ^2.0.7
   intl: ^0.18.0
   syncfusion_flutter_datepicker: ^21.2.3
-  awesome_notifications: ^0.7.4+1
+  # awesome_notifications: ^0.7.4+1
   google_maps_flutter: ^2.4.0
   form_builder_extra_fields: ^10.0.0
   flutter_typeahead: ^4.6.2

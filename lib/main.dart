@@ -2,22 +2,22 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:newama2/auth/flushscreen.dart';
 import 'package:newama2/auth/test.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
+// import 'package:awesome_notifications/awesome_notifications.dart';
 
 void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
-  AwesomeNotifications().initialize(
-    null,
-    [
-      NotificationChannel(
-        channelKey: 'Newama_delivery', 
-        channelName: 'Newama Delivery Notifications', 
-        channelDescription: 'Notifications Channel for Newama Delivery')
-    ],
-    debug: true,
+  // AwesomeNotifications().initialize(
+  //   null,
+  //   [
+  //     NotificationChannel(
+  //       channelKey: 'Newama_delivery', 
+  //       channelName: 'Newama Delivery Notifications', 
+  //       channelDescription: 'Notifications Channel for Newama Delivery')
+  //   ],
+  //   debug: true,
 
-  );
+  // );
   await Firebase.initializeApp();
   runApp(const MyApp());
 }

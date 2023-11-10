@@ -19,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.fromLTRB(0, 0, 0, 110),
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 160),
           decoration: BoxDecoration(
             color: Color.fromARGB(255, 225, 240, 248),
           ),

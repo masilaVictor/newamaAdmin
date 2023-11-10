@@ -35,7 +35,7 @@ class _AdminLoginState extends State<AdminLogin> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.fromLTRB(10, 0, 10, 110),
+                margin: EdgeInsets.fromLTRB(10, 0, 10, 160),
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                     color: Colors.white,

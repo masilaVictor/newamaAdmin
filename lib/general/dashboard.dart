@@ -39,6 +39,9 @@ class _DashboardState extends State<Dashboard> {
   List ordersAll = [];
   List allDelivered = [];
   List allCancelled = [];
+  String? selectedRider;
+
+  List Riders = [];
 
   @override
   void initState() {
@@ -49,6 +52,15 @@ class _DashboardState extends State<Dashboard> {
     getAllOrders();
     getallDeliveredOrders();
     getallCancelledOrders();
+    getRider();
+  }
+
+  getRider() async {
+    final response4 = await http
+        .get(Uri.parse("http://api.newamadelivery.co.ke/fetchRiders.php"));
+    Riders = json.decode(response4.body);
+
+    setState(() {});
   }
 
   getPendingOrders() async {
@@ -80,8 +92,8 @@ class _DashboardState extends State<Dashboard> {
   }
 
   getAllOrders() async {
-    final response1 =
-        await http.get(Uri.parse("http://api.newamadelivery.co.ke/allOrders.php"));
+    final response1 = await http
+        .get(Uri.parse("http://api.newamadelivery.co.ke/allOrders.php"));
     setState(() {
       ordersAll = json.decode(response1.body);
     });
@@ -136,8 +148,8 @@ class _DashboardState extends State<Dashboard> {
               decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Color.fromARGB(255, 50, 50, 50),
-                      Color.fromARGB(255, 151, 151, 151),
+                      Color.fromARGB(255, 0, 0, 0),
+                      Color.fromARGB(255, 255, 255, 255),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -147,12 +159,12 @@ class _DashboardState extends State<Dashboard> {
                       bottomRight: Radius.circular(15))),
               child: SizedBox(
                 width: double.infinity,
-                height: 242,
+                height: 262,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(
-                      height: 30,
+                      height: 50,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -166,7 +178,7 @@ class _DashboardState extends State<Dashboard> {
                         ),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              primary: Color.fromARGB(255, 95, 9, 9),
+                              primary: Color.fromARGB(255, 255, 0, 0),
                             ),
                             onPressed: () {
                               FirebaseAuth.instance.signOut();
@@ -175,7 +187,7 @@ class _DashboardState extends State<Dashboard> {
                                   MaterialPageRoute(
                                       builder: (context) => Test()));
                             },
-                            child: Text('Exit'))
+                            child: Icon(Icons.logout_rounded))
                       ],
                     ),
                     const SizedBox(
@@ -188,7 +200,7 @@ class _DashboardState extends State<Dashboard> {
                           padding: EdgeInsets.all(3),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5),
-                              color: Color.fromARGB(169, 183, 253, 214)),
+                              color: Color.fromARGB(255, 0, 109, 49)),
                           child: SizedBox(
                             width: 116,
                             height: 56,
@@ -218,7 +230,7 @@ class _DashboardState extends State<Dashboard> {
                           padding: EdgeInsets.all(3),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5),
-                              color: Color.fromARGB(199, 96, 85, 247)),
+                              color: Color.fromARGB(255, 11, 0, 163)),
                           child: SizedBox(
                             width: 116,
                             height: 56,
@@ -257,7 +269,7 @@ class _DashboardState extends State<Dashboard> {
                           padding: EdgeInsets.all(3),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5),
-                              color: Color.fromARGB(169, 250, 231, 57)),
+                              color: Color.fromARGB(255, 156, 146, 0)),
                           child: SizedBox(
                             width: 116,
                             height: 56,
@@ -288,7 +300,7 @@ class _DashboardState extends State<Dashboard> {
                           padding: EdgeInsets.all(3),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5),
-                              color: Color.fromARGB(197, 253, 57, 57)),
+                              color: Color.fromARGB(255, 255, 0, 0)),
                           child: SizedBox(
                             width: 116,
                             height: 56,
@@ -353,45 +365,113 @@ class _DashboardState extends State<Dashboard> {
                             borderRadius: BorderRadius.circular(5),
                             color: Color.fromARGB(50, 64, 195, 255),
                           ),
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: 190,
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Order No.',
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Order No.',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w500),
+                                  ),
+                                  Text('Store',
                                       style: TextStyle(
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                    Text('Store',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500)),
-                                    Text('Status',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500)),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Container(
-                                  child: Visibility(
-                                    visible: isLoaded,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.vertical,
-                                      shrinkWrap: true,
-                                      itemCount: pendingOrders?.length,
-                                      itemBuilder: (context, index) {
-                                        return GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) => OrderPage(
+                                          fontWeight: FontWeight.w500)),
+                                  Text('Status',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500)),
+                                ],
+                              ),
+                              Visibility(
+                                visible: isLoaded,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  itemCount: pendingOrders?.length,
+                                  itemBuilder: (context, index) {
+                                    return GestureDetector(
+                                        onTap: () {
+                                          // showDialog(
+                                          //     context: context,
+                                          //     builder: (context) {
+                                          //       return AlertDialog(
+                                          //         title: Text(
+                                          //             'Order No: ${pendingOrders![index]['orderID']}'),
+                                          //         actions: [
+                                          //           Container(
+                                          //             child: Row(
+                                          //               mainAxisAlignment:
+                                          //                   MainAxisAlignment
+                                          //                       .spaceBetween,
+                                          //               children: [
+                                          //                 Column(
+                                          //                   crossAxisAlignment:
+                                          //                       CrossAxisAlignment
+                                          //                           .start,
+                                          //                   children: [
+                                          //                     Text(
+                                          //                         'Customer: ${pendingOrders![index]['customer']}'),
+                                          //                     const SizedBox(
+                                          //                       height: 10,
+                                          //                     ),
+                                          //                     Text(
+                                          //                         'Contacts: ${pendingOrders![index]['contacts']}'),
+                                          //                     const SizedBox(
+                                          //                       height: 10,
+                                          //                     ),
+                                          //                     Text(
+                                          //                         'Area: ${pendingOrders![index]['area']}'),
+                                          //                     const SizedBox(
+                                          //                       height: 10,
+                                          //                     ),
+                                          //                     Text(
+                                          //                         'Landmark: ${pendingOrders![index]['landmark']}'),
+                                          //                     Row(
+                                          //                       children: [
+                                          //                         SizedBox(
+                                          //                           width: 270,
+                                          //                           child: DropdownButton(
+                                          //                               value: selectedRider,
+                                          //                               hint: Text('Assign Rider*'),
+                                          //                               items: Riders.map((e) {
+                                          //                                 return DropdownMenuItem(
+                                          //                                   child:
+                                          //                                       SizedBox(width: 220, child: Text('${e["ridername"]} - ${e["phone"]} ')),
+                                          //                                   value:
+                                          //                                       e["phone"],
+                                          //                                 );
+                                          //                               }).toList(),
+                                          //                               onChanged: (value) {
+                                          //                                 setState(
+                                          //                                     () {
+                                          //                                   selectedRider =
+                                          //                                       'mas';
+                                          //                                 });
+                                          //                               }),
+                                          //                         ),
+                                          //                       ],
+                                          //                     )
+                                          //                   ],
+                                          //                 ),
+                                          //               ],
+                                          //             ),
+                                          //           ),
+                                          //           ElevatedButton(
+                                          //               onPressed: () {
+                                          //                 Navigator.pop(
+                                          //                     context);
+                                          //               },
+                                          //               child: Text('okay'))
+                                          //         ],
+                                          //       );
+                                          //     });
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      OrderPage(
                                                           orderno:
                                                               pendingOrders![
                                                                       index]
@@ -404,124 +484,59 @@ class _DashboardState extends State<Dashboard> {
                                                               pendingOrders![
                                                                       index]
                                                                   ['status'])));
-                                            },
-                                            child: Column(
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                        '${pendingOrders![index]['orderID']}'),
-                                                    Text(
-                                                        '${pendingOrders![index]['outlet']}'),
-                                                    Text(
-                                                        '${pendingOrders![index]['status']}')
-                                                  ],
-                                                ),
-                                                const SizedBox(
-                                                  height: 5,
-                                                )
+                                                Text(
+                                                    '${pendingOrders![index]['orderID']}'),
+                                                Text(
+                                                    '${pendingOrders![index]['outlet']}'),
+                                                Text(
+                                                    '${pendingOrders![index]['status']}')
                                               ],
-                                            ));
-                                      },
-                                    ),
-                                    replacement: CircularProgressIndicator(),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            )
+                                          ],
+                                        ));
+                                  },
+                                ),
+                                replacement: CircularProgressIndicator(),
+                              ),
+                              GestureDetector(
+                                onTap: () {},
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => NewOrders()));
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        'View All',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_ios,
+                                        size: 10,
+                                        color: Colors.red,
+                                      )
+                                    ],
                                   ),
                                 ),
-                                // Expanded(
-                                //   child: FirebaseAnimatedList(
-                                //       query: dbRef
-                                //           .orderByChild('status')
-                                //           .equalTo('Pending'),
-                                //       itemBuilder: (BuildContext context,
-                                //           DataSnapshot snapshot,
-                                //           Animation<double> animation,
-                                //           int index) {
-                                //         Map orders = snapshot.value as Map;
-                                //         orders['key'] = snapshot.key;
-
-                                //         // var dt3 = DateTime.fromMillisecondsSinceEpoch(
-                                //         // orders['postTime'].millisecondsSinceEpoch);
-                                //         // var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
-
-                                //         var dt3 =
-                                //             DateTime.fromMillisecondsSinceEpoch(
-                                //                 int.parse(orders['postTime']));
-                                //         var TAS3 = DateFormat('dd/MM/yyyy')
-                                //             .format(dt3);
-                                //         check = check + 1;
-                                //         if (TAS3.compareTo(TAS2) == 0) {
-                                //           return GestureDetector(
-                                //             onTap: () {
-                                //               Navigator.push(
-                                //                   context,
-                                //                   MaterialPageRoute(
-                                //                       builder: (context) =>
-                                //                           OrderPage(
-                                //                               orderno:
-                                //                                   snapshot.key
-                                //                                       as String,
-                                //                               outlet: orders[
-                                //                                   'outlet'],
-                                //                               status: orders[
-                                //                                   'status'])));
-                                //             },
-                                //             child: Column(
-                                //               children: [
-                                //                 Row(
-                                //                   mainAxisAlignment:
-                                //                       MainAxisAlignment
-                                //                           .spaceBetween,
-                                //                   children: [
-                                //                     Text('${snapshot.key}'),
-                                //                     Text('${orders['outlet']}'),
-                                //                     Text('${orders['status']}'),
-                                //                     Text('$TAS3'),
-                                //                   ],
-                                //                 ),
-                                //                 const SizedBox(
-                                //                   height: 13,
-                                //                 )
-                                //               ],
-                                //             ),
-                                //           );
-                                //         } else {
-                                //           return Container();
-                                //         }
-                                //       }),
-                                // ),
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  NewOrders()));
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          'View All',
-                                          style: TextStyle(color: Colors.red),
-                                        ),
-                                        Icon(
-                                          Icons.arrow_forward_ios,
-                                          size: 10,
-                                          color: Colors.red,
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                              ],
-                            ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                            ],
                           ),
                         ),
                         const SizedBox(
@@ -545,45 +560,42 @@ class _DashboardState extends State<Dashboard> {
                             borderRadius: BorderRadius.circular(5),
                             color: Color.fromARGB(49, 64, 255, 245),
                           ),
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: 190,
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Order No.',
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Order No.',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w500),
+                                  ),
+                                  Text('Store',
                                       style: TextStyle(
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                    Text('Store',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500)),
-                                    Text('Status',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500)),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Container(
-                                  child: Visibility(
-                                    visible: isLoaded2,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.vertical,
-                                      shrinkWrap: true,
-                                      itemCount: processingOrders?.length,
-                                      itemBuilder: (context, index) {
-                                        return GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) => DispatchPage(
+                                          fontWeight: FontWeight.w500)),
+                                  Text('Status',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500)),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Visibility(
+                                visible: isLoaded2,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  itemCount: processingOrders?.length,
+                                  itemBuilder: (context, index) {
+                                    return GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      DispatchPage(
                                                           orderno:
                                                               processingOrders![
                                                                       index]
@@ -600,124 +612,57 @@ class _DashboardState extends State<Dashboard> {
                                                               processingOrders![
                                                                       index]
                                                                   ['rider'])));
-                                            },
-                                            child: Column(
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                        '${processingOrders![index]['orderID']}'),
-                                                    Text(
-                                                        '${processingOrders![index]['outlet']}'),
-                                                    Text(
-                                                        '${processingOrders![index]['status']}')
-                                                  ],
-                                                ),
-                                                const SizedBox(
-                                                  height: 5,
-                                                )
+                                                Text(
+                                                    '${processingOrders![index]['orderID']}'),
+                                                Text(
+                                                    '${processingOrders![index]['outlet']}'),
+                                                Text(
+                                                    '${processingOrders![index]['status']}')
                                               ],
-                                            ));
-                                      },
-                                    ),
-                                    replacement: CircularProgressIndicator(),
-                                  ),
-                                ),
-
-                                // Expanded(
-                                //   child: FirebaseAnimatedList(
-                                //       query: dbRef
-                                //           .orderByChild('status')
-                                //           .equalTo('Processing'),
-                                //       itemBuilder: (BuildContext context,
-                                //           DataSnapshot snapshot,
-                                //           Animation<double> animation,
-                                //           int index) {
-                                //         Map orders = snapshot.value as Map;
-                                //         orders['key'] = snapshot.key;
-
-                                //         // var dt3 = DateTime.fromMillisecondsSinceEpoch(
-                                //         // orders['postTime'].millisecondsSinceEpoch);
-                                //         // var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
-
-                                //         var dt3 =
-                                //             DateTime.fromMillisecondsSinceEpoch(
-                                //                 int.parse(orders['postTime']));
-                                //         var TAS3 = DateFormat('dd/MM/yyyy')
-                                //             .format(dt3);
-                                //         check = check + 1;
-                                //         if (TAS3.compareTo(TAS2) == 0) {
-                                //           return GestureDetector(
-                                //             onTap: () {
-                                //               Navigator.push(
-                                //                   context,
-                                //                   MaterialPageRoute(
-                                //                       builder: (context) =>
-                                //                           DispatchPage(
-                                //                               orderno:
-                                //                                   snapshot.key
-                                //                                       as String,
-                                //                               outlet: orders[
-                                //                                   'outlet'],
-                                //                               status: orders[
-                                //                                   'status'],
-                                //                               rider: orders[
-                                //                                   'RiderMail'])));
-                                //             },
-                                //             child: Column(
-                                //               children: [
-                                //                 Row(
-                                //                   mainAxisAlignment:
-                                //                       MainAxisAlignment
-                                //                           .spaceBetween,
-                                //                   children: [
-                                //                     Text('${snapshot.key}'),
-                                //                     Text('${orders['outlet']}'),
-                                //                     Text('${orders['status']}'),
-                                //                     Text('$TAS3'),
-                                //                   ],
-                                //                 ),
-                                //                 const SizedBox(
-                                //                   height: 13,
-                                //                 )
-                                //               ],
-                                //             ),
-                                //           );
-                                //         } else {
-                                //           return Container();
-                                //         }
-                                //       }),
-                                // ),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                DispatchOrders()));
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            )
+                                          ],
+                                        ));
                                   },
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        'View All',
-                                        style: TextStyle(color: Colors.red),
-                                      ),
-                                      Icon(
-                                        Icons.arrow_forward_ios,
-                                        size: 10,
-                                        color: Colors.red,
-                                      )
-                                    ],
-                                  ),
                                 ),
-                                const SizedBox(
-                                  height: 20,
+                                replacement: CircularProgressIndicator(),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              DispatchOrders()));
+                                },
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      'View All',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                    Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 10,
+                                      color: Colors.red,
+                                    )
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                            ],
                           ),
                         ),
                         const SizedBox(
@@ -741,45 +686,42 @@ class _DashboardState extends State<Dashboard> {
                             borderRadius: BorderRadius.circular(5),
                             color: Color.fromARGB(48, 64, 115, 255),
                           ),
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: 190,
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Order No.',
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Order No.',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w500),
+                                  ),
+                                  Text('Store',
                                       style: TextStyle(
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                    Text('Store',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500)),
-                                    Text('Status',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500)),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Container(
-                                  child: Visibility(
-                                    visible: isLoaded3,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.vertical,
-                                      shrinkWrap: true,
-                                      itemCount: transitOrders?.length,
-                                      itemBuilder: (context, index) {
-                                        return GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) => TransitPage(
+                                          fontWeight: FontWeight.w500)),
+                                  Text('Status',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500)),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Visibility(
+                                visible: isLoaded3,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  itemCount: transitOrders?.length,
+                                  itemBuilder: (context, index) {
+                                    return GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      TransitPage(
                                                           orderno:
                                                               transitOrders![
                                                                       index]
@@ -795,125 +737,57 @@ class _DashboardState extends State<Dashboard> {
                                                           rider: transitOrders![
                                                                   index]
                                                               ['rider'])));
-                                            },
-                                            child: Column(
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                        '${transitOrders![index]['orderID']}'),
-                                                    Text(
-                                                        '${transitOrders![index]['outlet']}'),
-                                                    Text(
-                                                        '${transitOrders![index]['status']}')
-                                                  ],
-                                                ),
-                                                const SizedBox(
-                                                  height: 5,
-                                                )
+                                                Text(
+                                                    '${transitOrders![index]['orderID']}'),
+                                                Text(
+                                                    '${transitOrders![index]['outlet']}'),
+                                                Text(
+                                                    '${transitOrders![index]['status']}')
                                               ],
-                                            ));
-                                      },
-                                    ),
-                                    replacement: CircularProgressIndicator(),
-                                  ),
-                                ),
-
-                                // Expanded(
-                                //   child: FirebaseAnimatedList(
-                                //       query: dbRef
-                                //           .orderByChild('status')
-                                //           .equalTo('Transit'),
-                                //       itemBuilder: (BuildContext context,
-                                //           DataSnapshot snapshot,
-                                //           Animation<double> animation,
-                                //           int index) {
-                                //         Map orders = snapshot.value as Map;
-                                //         orders['key'] = snapshot.key;
-
-                                //         // var dt3 = DateTime.fromMillisecondsSinceEpoch(
-                                //         // orders['postTime'].millisecondsSinceEpoch);
-                                //         // var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
-
-                                //         var dt3 =
-                                //             DateTime.fromMillisecondsSinceEpoch(
-                                //                 int.parse(orders['postTime']));
-                                //         var TAS3 = DateFormat('dd/MM/yyyy')
-                                //             .format(dt3);
-                                //         check = check + 1;
-                                //         if (TAS3.compareTo(TAS2) == 0) {
-                                //           return GestureDetector(
-                                //             onTap: () {
-                                //               Navigator.push(
-                                //                   context,
-                                //                   MaterialPageRoute(
-                                //                       builder: (context) =>
-                                //                           TransitPage(
-                                //                               orderno:
-                                //                                   snapshot.key
-                                //                                       as String,
-                                //                               outlet: orders[
-                                //                                   'outlet'],
-                                //                               status: orders[
-                                //                                   'status'],
-                                //                               rider: orders[
-                                //                                   'RiderMail'])));
-                                //             },
-                                //             child: Column(
-                                //               children: [
-                                //                 Row(
-                                //                   mainAxisAlignment:
-                                //                       MainAxisAlignment
-                                //                           .spaceBetween,
-                                //                   children: [
-                                //                     Text('${snapshot.key}'),
-                                //                     Text('${orders['outlet']}'),
-                                //                     Text('${orders['status']}'),
-                                //                     Text('$TAS3'),
-                                //                   ],
-                                //                 ),
-                                //                 const SizedBox(
-                                //                   height: 13,
-                                //                 )
-                                //               ],
-                                //             ),
-                                //           );
-                                //         } else {
-                                //           return Container();
-                                //         }
-                                //       }),
-                                // ),
-
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                TransitOrders()));
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            )
+                                          ],
+                                        ));
                                   },
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        'View All',
-                                        style: TextStyle(color: Colors.red),
-                                      ),
-                                      Icon(
-                                        Icons.arrow_forward_ios,
-                                        size: 10,
-                                        color: Colors.red,
-                                      )
-                                    ],
-                                  ),
                                 ),
-                                const SizedBox(
-                                  height: 20,
+                                replacement: CircularProgressIndicator(),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              TransitOrders()));
+                                },
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      'View All',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                    Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 10,
+                                      color: Colors.red,
+                                    )
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                            ],
                           ),
                         )
 

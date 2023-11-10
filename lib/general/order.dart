@@ -27,14 +27,20 @@ class _OrderPageState extends State<OrderPage> {
   List<dynamic> riders = [];
   List thisOrder = [];
   var isLoaded = false;
+  String? selectedRider;
+
+  List Riders = [];
 
   String? riderId;
   _OrderPageState(this.orderno, this.outlet, this.status);
   final dataseRef = FirebaseDatabase.instance.ref();
+
   @override
   void initState() {
     super.initState();
     getThisOrder();
+    getRider();
+
     this
         .riders
         .add({"id": "philipkip@gmail.com", "label": "Philip Kip(0706034707)"});
@@ -63,6 +69,14 @@ class _OrderPageState extends State<OrderPage> {
     });
   }
 
+  getRider() async {
+    final response4 = await http
+        .get(Uri.parse("http://api.newamadelivery.co.ke/fetchRiders.php"));
+    Riders = json.decode(response4.body);
+
+    setState(() {});
+  }
+
   getThisOrder() async {
     final response = await http.get(Uri.parse(
         "http://api.newamadelivery.co.ke/fetchOrder.php?orderId=${orderno}"));
@@ -79,7 +93,7 @@ class _OrderPageState extends State<OrderPage> {
           body: {
             "orderId": orderno,
             "assignTime": DateTime.now().millisecondsSinceEpoch.toString(),
-            "rider": riderId as String,
+            "rider": selectedRider as String,
             "status": "Processing"
           });
       var response2 = jsonDecode(result1.body);
@@ -108,226 +122,229 @@ class _OrderPageState extends State<OrderPage> {
           backgroundColor: Color.fromARGB(255, 35, 40, 44),
           title: Text('Order No $orderno'),
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            child: Column(
-              children: [
-                Image.asset('assets/images/cart.png'),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 35, 40, 44),
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20)),
-                  ),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 300,
-                    child: Container(
-                      margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
-                      child: Column(
-                        children: [
-                          Visibility(
-                              visible: isLoaded,
-                              child: ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                itemCount: thisOrder?.length,
-                                itemBuilder: (context, index) {
-                                  return Container(
-                                    margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              'Status - ${status}',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                            Text('|'),
-                                            Text(
-                                              'Store - ${outlet}',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              'Customer: ${thisOrder![index]['customer']}',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                            Text(
-                                              'Contacts: ${thisOrder![index]['contact']}',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Area: ${thisOrder![index]['area']}',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                                const SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Text(
-                                                  'Landmark: ${thisOrder![index]['landmark']}',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              'Items: ${thisOrder![index]['item']}',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                            Text(
-                                              'Value: Kes ${thisOrder![index]['price']}/=',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                },
-                              )),
-                        ],
+        body: Container(
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 250,
+                        child: DropdownButton(
+                            value: selectedRider,
+                            hint: Text('Assign Rider*'),
+                            items: Riders.map((e) {
+                              return DropdownMenuItem(
+                                child: SizedBox(
+                                    width: 200,
+                                    child: Text(
+                                        '${e["ridername"]} - ${e["phone"]} ')),
+                                value: e["rideremail"],
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                selectedRider = value as String;
+                              });
+                            }),
                       ),
+                    ],
+                  ),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.all(10),
+                          backgroundColor: Color.fromARGB(255, 1, 43, 85)),
+                      onPressed: () {
+                        if (selectedRider == null || riderId == '') {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text('Error'),
+                                  content:
+                                      Text('Please Select A Rider to Assign'),
+                                  actions: [
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text('Close'))
+                                  ],
+                                );
+                              });
+                        } else {
+                          updateThisOrder();
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('Assignment Successful'),
+                                  content: Text(
+                                      'Notification sent to ${selectedRider}'),
+                                  actions: [
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const Dashboard()));
+                                        },
+                                        child: const Text('Close'))
+                                  ],
+                                );
+                              });
+                        }
+                      },
+                      child: const Text('Assign Rider'))
+                ],
+              ),
+              Image.asset('assets/images/cart.png'),
+              Container(
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 35, 40, 44),
+                  // borderRadius: BorderRadius.only(
+                  //     topLeft: Radius.circular(20),
+                  //     topRight: Radius.circular(20)),
+                ),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 318.2,
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
+                    child: Column(
+                      children: [
+                        Visibility(
+                            visible: isLoaded,
+                            child: ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              itemCount: thisOrder?.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Status - ${status}',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          Text('|'),
+                                          Text(
+                                            'Store - ${outlet}',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                'Customer: ${thisOrder![index]['customer']}',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 15,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                              Text(
+                                                'Contacts: ${thisOrder![index]['contact']}',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 15,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Area: ${thisOrder![index]['area']}',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 15,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text(
+                                                'Landmark: ${thisOrder![index]['landmark']}',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 15,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Items: ${thisOrder![index]['item']}',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          Text(
+                                            'Value: Kes ${thisOrder![index]['price']}/=',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                );
+                              },
+                            )),
+                      ],
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                      child: SizedBox(
-                        width: 180,
-                        child: FormHelper.dropDownWidget(
-                          context,
-                          "Select Rider",
-                          this.riderId,
-                          this.riders,
-                          (onChangedVal) {
-                            this.riderId = onChangedVal;
-                          },
-                          (onValidateVal) {
-                            return null;
-                          },
-                          borderColor: const Color.fromARGB(255, 158, 11, 0),
-                          borderFocusColor: Color.fromARGB(255, 158, 11, 0),
-                          borderRadius: 10,
-                          optionValue: "id",
-                          optionLabel: "label",
-                        ),
-                      ),
-                    ),
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.all(15),
-                            backgroundColor: Color.fromARGB(255, 1, 43, 85)),
-                        onPressed: () {
-                          if (riderId == null || riderId == '') {
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: Text('Error'),
-                                    content:
-                                        Text('Please Select A Rider to Assign'),
-                                    actions: [
-                                      ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text('Close'))
-                                    ],
-                                  );
-                                });
-                          } else {
-                            updateThisOrder();
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: const Text('Assignment Successful'),
-                                    content:
-                                        Text('Notification sent to ${riderId}'),
-                                    actions: [
-                                      ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const Dashboard()));
-                                          },
-                                          child: const Text('Close'))
-                                    ],
-                                  );
-                                });
-                          }
-                        },
-                        child: const Text('Assign Rider'))
-                  ],
-                )
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

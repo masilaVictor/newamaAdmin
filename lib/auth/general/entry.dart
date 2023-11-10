@@ -39,6 +39,10 @@ class _EntriesState extends State<Entries> {
   List<dynamic> stores = [];
   String? storeId;
 
+  String? selectedStore;
+
+  List Stores = [];
+
   @override
   void initState() {
     // AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
@@ -47,6 +51,7 @@ class _EntriesState extends State<Entries> {
     //   }
     // });
     super.initState();
+    getStores();
     this
         .stores
         .add({"id": "Naivas Gateway Mall", "label": "Naivas Gateway Mall"});
@@ -66,6 +71,14 @@ class _EntriesState extends State<Entries> {
   //           body: 'You have a new order'));
   // }
 
+  getStores() async {
+    final response4 = await http
+        .get(Uri.parse("http://api.newamadelivery.co.ke/fetchStores.php"));
+    Stores = json.decode(response4.body);
+
+    setState(() {});
+  }
+
   Future<void> insertNewOrder() async {
     if (__orderId.text != "") {
       try {
@@ -73,7 +86,7 @@ class _EntriesState extends State<Entries> {
             Uri.parse("http://api.newamadelivery.co.ke/insert.php"),
             body: {
               "orderId": __orderId.text,
-              "outlet": storeId!,
+              "outlet": selectedStore,
               "item": __productNameController.text,
               "price": __priceController.text,
               "customer": __customerNameController.text,
@@ -81,7 +94,7 @@ class _EntriesState extends State<Entries> {
               "area": autocompletePlace,
               "landmark": __customerStreet.text,
               "postTime": DateTime.now().millisecondsSinceEpoch.toString(),
-              "status": 'pending',
+              "status": 'Pending',
             });
         var response = jsonDecode(result.body);
         if (response["success"] == "true") {
@@ -117,8 +130,8 @@ class _EntriesState extends State<Entries> {
               decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Color.fromARGB(255, 0, 31, 97),
-                      Color.fromARGB(255, 151, 151, 151),
+                      Color.fromARGB(255, 0, 5, 15),
+                      Color.fromARGB(255, 255, 255, 255),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -136,43 +149,37 @@ class _EntriesState extends State<Entries> {
                       height: 70,
                     ),
                     const Text(
-                      'Welcome to Newama Order Entry Dashboard',
+                      'Newama Order Entry Dashboard',
                       style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.w800,
-                          color: Color.fromARGB(255, 237, 18, 2)),
+                          color: Color.fromARGB(255, 255, 255, 255)),
                     ),
                     const SizedBox(
                       height: 20,
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Container(
-                          child: SizedBox(
-                            width: 250,
-                            child: FormHelper.dropDownWidget(
-                              context,
-                              "Select Store",
-                              this.storeId,
-                              this.stores,
-                              (onChangedVal) {
-                                this.storeId = onChangedVal;
-                              },
-                              (onValidateVal) {
-                                return null;
-                              },
-                              borderColor:
-                                  const Color.fromARGB(255, 158, 11, 0),
-                              borderFocusColor: Color.fromARGB(255, 158, 11, 0),
-                              borderRadius: 10,
-                              optionValue: "id",
-                              optionLabel: "label",
-                            ),
-                          ),
+                        SizedBox(
+                          width: 250,
+                          child: DropdownButton(
+                              value: selectedStore,
+                              hint: Text('Select Store*'),
+                              items: Stores.map((e) {
+                                return DropdownMenuItem(
+                                  child: SizedBox(
+                                      width: 200, child: Text('${e["store"]}')),
+                                  value: e["store"],
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedStore = value as String;
+                                });
+                              }),
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -272,7 +279,7 @@ class _EntriesState extends State<Entries> {
                                 width: 1,
                                 color: Color.fromARGB(255, 0, 43, 78),
                               )),
-                              labelText: 'Order Price',
+                              labelText: 'Order Value',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(20),
                               )),

@@ -3,23 +3,21 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:newama2/general/dashboard.dart';
-import 'package:newama2/general/deli.dart';
-import 'package:newama2/general/dispatch.dart';
 import 'package:newama2/general/order.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:newama2/general/transit.dart';
 
-class NewOrders extends StatefulWidget {
-  const NewOrders({super.key,this.restorationId});
+class OrdersTransit extends StatefulWidget {
+  const OrdersTransit({super.key,this.restorationId});
   final String? restorationId;
 
   @override
-  State<NewOrders> createState() => _NewOrdersState();
+  State<OrdersTransit> createState() => _OrdersTransitState();
 }
 
-class _NewOrdersState extends State<NewOrders> with RestorationMixin {
+class _OrdersTransitState extends State<OrdersTransit> with RestorationMixin {
   String? get restorationId => widget.restorationId;
   var Thistime =((DateTime.now().millisecondsSinceEpoch) - 86400000);
   final RestorableDateTime _selectedDate =
@@ -75,23 +73,12 @@ class _NewOrdersState extends State<NewOrders> with RestorationMixin {
       });
     }
   }
-  Query dbRef = FirebaseDatabase.instance.ref().child('Orders');
   List pendingOrders = [];
   var isLoaded = false;
-  var useDate = 
-        ((DateTime.now().millisecondsSinceEpoch) - 86400000).toString();
-
-  @override
-  void initState() {
-    super.initState();
-    getPendingOrders();
-    
-    
-  }
 
   getPendingOrders() async {
     final response1 = await http
-        .get(Uri.parse("http://api.newamadelivery.co.ke/allByDay.php?startDate=${Thistime.toString()}"));
+        .get(Uri.parse("http://api.newamadelivery.co.ke/transitByDate.php?startDate=${Thistime.toString()}"));
     setState(() {
       pendingOrders = json.decode(response1.body);
       isLoaded = true;
@@ -99,9 +86,15 @@ class _NewOrdersState extends State<NewOrders> with RestorationMixin {
     return pendingOrders;
   }
 
+   @override
+  void initState() {
+    super.initState();
+    getPendingOrders();
+    
+    
+  }
   @override
   Widget build(BuildContext context) {
-
     var dt2 = DateTime.fromMillisecondsSinceEpoch(
         _selectedDate.value.millisecondsSinceEpoch);
     var TAS2 = DateFormat('dd/MM/yyyy').format(dt2);
@@ -139,12 +132,14 @@ class _NewOrdersState extends State<NewOrders> with RestorationMixin {
                 visible: isLoaded,
                 child: ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
-                 shrinkWrap: true,
+                  shrinkWrap: true,
                   itemCount: pendingOrders?.length,
                   itemBuilder: (context, index) {
                     var dt3 = DateTime.fromMillisecondsSinceEpoch(
                         int.parse(pendingOrders![index]['postTime']));
                     var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
+
+                   
                       return Container(
                         margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                         padding: EdgeInsets.fromLTRB(5, 20, 5, 20),
@@ -162,35 +157,7 @@ class _NewOrdersState extends State<NewOrders> with RestorationMixin {
                               borderRadius: BorderRadius.circular(10)),
                         child: GestureDetector(
                           onTap: () {
-                            if(pendingOrders![index]['status'] == 'Pending'){
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => OrderPage(
-                                        orderno: pendingOrders![index]
-                                            ['orderID'],
-                                        outlet: pendingOrders![index]['outlet'],
-                                        status: pendingOrders![index]
-                                            ['status'])));
-                            }
-
-                            else if(pendingOrders![index]['status'] == 'Processing'){
-                              Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => DispatchPage(
-                                                orderno:
-                                                    pendingOrders![index]
-                                                        ['orderID'],
-                                                outlet: pendingOrders![index]
-                                                    ['outlet'],
-                                                status: pendingOrders![index]
-                                                    ['status'],
-                                                rider: pendingOrders![index]
-                                                    ['rider'])));
-                            }
-                            else if(pendingOrders![index]['status'] == 'Transit'){
-                               Navigator.push(
+                           Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => TransitPage(
@@ -202,27 +169,7 @@ class _NewOrdersState extends State<NewOrders> with RestorationMixin {
                                                     ['status'],
                                                 rider: pendingOrders![index]
                                                     ['rider'])));
-                            
-                          }
-                          else{
-                            Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => DeliPage(
-                                                orderno: pendingOrders![index]
-                                                    ['orderID'],
-                                                outlet: pendingOrders![index]
-                                                    ['outlet'],
-                                                status: pendingOrders![index]
-                                                    ['status'],
-                                                rider: pendingOrders![index]
-                                                    ['rider']
-                                                
-                                                )));
-
-                          }
                           },
-                          
                           child: Column(
                             children: [
                               Text(
@@ -246,64 +193,10 @@ class _NewOrdersState extends State<NewOrders> with RestorationMixin {
                 ),
                 replacement: CircularProgressIndicator(),
               ),
-
-              // SizedBox(
-              //   height: 600,
-              //   child: FirebaseAnimatedList(
-              //       query: dbRef.orderByChild('status').equalTo('Pending'),
-              //       itemBuilder: (BuildContext context, DataSnapshot snapshot,
-              //           Animation<double> animation, int index) {
-              //         Map orders = snapshot.value as Map;
-              //         orders['key'] = snapshot.key;
-
-              //         // var dt3 = DateTime.fromMillisecondsSinceEpoch(
-              //         // orders['postTime'].millisecondsSinceEpoch);
-              //         // var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
-
-              //         var dt3 = DateTime.fromMillisecondsSinceEpoch(
-              //             int.parse(orders['postTime']));
-              //         var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
-
-              //         return Container(
-              //           margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-              //           padding: EdgeInsets.fromLTRB(5, 20, 5, 20),
-              //           decoration: BoxDecoration(
-              //               color: Color.fromARGB(255, 35, 40, 44),
-              //               borderRadius: BorderRadius.circular(10)),
-              //           child: GestureDetector(
-              //             onTap: () {
-              //               Navigator.push(
-              //                   context,
-              //                   MaterialPageRoute(
-              //                       builder: (context) => OrderPage(
-              //                           orderno: snapshot.key as String,
-              //                           outlet: orders['outlet'],
-              //                           status: orders['status'])));
-              //             },
-              //             child: Column(
-              //               children: [
-              //                 Text(
-              //                   'Order No. - ${snapshot.key} - ${orders['outlet']}',
-              //                   style: TextStyle(color: Colors.white),
-              //                 ),
-              //                 const SizedBox(
-              //                   height: 10,
-              //                 ),
-              //                 Text(
-              //                   'Date: $TAS3',
-              //                   style: TextStyle(
-              //                       color: Colors.white, fontSize: 15),
-              //                 )
-              //               ],
-              //             ),
-              //           ),
-              //         );
-              //       }),
-              // ),
             ],
           ),
         ),
       ),
     );
   }
-}
+  }

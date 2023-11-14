@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:newama2/general/dashboard.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:http/http.dart' as http;
@@ -211,7 +212,7 @@ class _OrderPageState extends State<OrderPage> {
                 ),
                 child: SizedBox(
                   width: double.infinity,
-                  height: 318.2,
+                  height: 375.2,
                   child: Container(
                     margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
                     child: Column(
@@ -223,10 +224,19 @@ class _OrderPageState extends State<OrderPage> {
                               shrinkWrap: true,
                               itemCount: thisOrder?.length,
                               itemBuilder: (context, index) {
+                                var dt3 =
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                            int.parse(thisOrder![index]
+                                                ['postTime']));
+                                    var TAS3 =
+                                        DateFormat('dd/MM/yyyy').format(dt3);
                                 return Container(
+                                  
                                   margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
                                   child: Column(
                                     children: [
+                                      Text('Date: ${TAS3}',style: TextStyle(color: Colors.white),),
+                                      const SizedBox(height: 20,),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,

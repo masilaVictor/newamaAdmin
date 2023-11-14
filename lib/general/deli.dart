@@ -1,6 +1,10 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import 'package:intl/intl.dart';
 
 class DeliPage extends StatefulWidget {
   String orderno;
@@ -24,7 +28,24 @@ class _DeliPageState extends State<DeliPage> {
   String outlet;
   String status;
   String rider;
+  List thisOrder = [];
+  var isLoaded = false;
   _DeliPageState(this.orderno, this.outlet, this.status, this.rider);
+
+    getThisOrder() async {
+    final response = await http.get(Uri.parse(
+        "http://api.newamadelivery.co.ke/fetchOrder.php?orderId=${orderno}"));
+    setState(() {
+      thisOrder = json.decode(response.body);
+      isLoaded = true;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getThisOrder();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,40 +59,46 @@ class _DeliPageState extends State<DeliPage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 35, 40, 44),
+          backgroundColor: const Color.fromARGB(255, 0, 63, 114),
           title: Text('Order No $orderno'),
         ),
         body: SingleChildScrollView(
           child: Container(
-            child: Column(children: [
-              Image.asset('assets/images/cart.png'),
-              Container(
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 35, 40, 44),
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20)),
-                ),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 388,
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: FirebaseAnimatedList(
-                              query: dbRef1,
-                              itemBuilder: (BuildContext context,
-                                  DataSnapshot snapshot,
-                                  Animation<double> animation,
-                                  int index) {
-                                Map orders = snapshot.value as Map;
-                                orders['key'] = snapshot.key;
+            child: Column(
+              children: [
+                Image.asset('assets/images/cart.png'),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(197, 245, 16, 0),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20)),
+                  ),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 260,
+                    child: Container(
+                      margin: EdgeInsets.fromLTRB(30, 10, 30, 0),
+                      child: Column(
+                        children: [
+                          Visibility(
+                            visible: isLoaded,
+                            child: ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              itemCount: thisOrder?.length,
+                              itemBuilder: (context, index) {
+                                var dt3 =
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                            int.parse(thisOrder![index]
+                                                ['postTime']));
+                                    var TAS3 =
+                                        DateFormat('dd/MM/yyyy').format(dt3);
                                 return Container(
                                   margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
                                   child: Column(
                                     children: [
+                                      Text('Date: ${TAS3}',style: TextStyle(color: Colors.white),),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -101,14 +128,14 @@ class _DeliPageState extends State<DeliPage> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            'Customer: ${orders['Customer']}',
+                                            'Customer: ${thisOrder![index]['customer']}',
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 15,
                                                 fontWeight: FontWeight.w500),
                                           ),
                                           Text(
-                                            'Contacts: ${orders['Contacts']}',
+                                            'Contacts: ${thisOrder![index]['contact']}',
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 15,
@@ -117,7 +144,7 @@ class _DeliPageState extends State<DeliPage> {
                                         ],
                                       ),
                                       const SizedBox(
-                                        height: 10,
+                                        height: 15,
                                       ),
                                       Row(
                                         mainAxisAlignment:
@@ -128,113 +155,92 @@ class _DeliPageState extends State<DeliPage> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                'Area: ${orders['Area']}',
+                                                'Area: ${thisOrder![index]['area']}',
                                                 style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 15,
                                                     fontWeight:
                                                         FontWeight.w500),
                                               ),
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    'Landmark: ${orders['Landmark']}',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.w500),
-                                                  ),
-                                                ],
-                                              ),
                                               const SizedBox(
-                                                height: 10,
+                                                height: 15,
                                               ),
                                               Text(
-                                                "Rider: ${rider}",
+                                                'Landmark: ${thisOrder![index]['landmark']}',
                                                 style: TextStyle(
                                                     color: Colors.white,
-                                                    fontSize: 15),
+                                                    fontSize: 15,
+                                                    fontWeight:
+                                                        FontWeight.w500),
                                               ),
                                             ],
                                           ),
                                         ],
                                       ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Items: ${thisOrder![index]['item']}',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          Text(
+                                            'Value: Kes ${thisOrder![index]['price']}/=',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Assigned To: ${thisOrder![index]['rider']}',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 15,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      )
                                     ],
                                   ),
                                 );
-                              }),
-                        ),
-                        const SizedBox(
-                          height: 0,
-                        ),
-                        Text(
-                          'Order Details',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 19,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        Expanded(
-                          child: FirebaseAnimatedList(
-                              query: dbRef2,
-                              itemBuilder: (BuildContext context,
-                                  DataSnapshot snapshot,
-                                  Animation<double> animation,
-                                  int index) {
-                                Map order = snapshot.value as Map;
-                                order['key'] = snapshot.key;
-                                return Column(
-                                  children: [
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Text(
-                                          'Order Description: ${order['Item']}',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                        Text(
-                                          'Amount: Ksh.${order['Price']}',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Text(
-                                          'Quantity: ${order['Quantity']}',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                );
-                              }),
-                        ),
-                      ],
+                              },
+                            ),
+                            replacement: CircularProgressIndicator(),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              )
-            ]),
+                const SizedBox(
+                  height: 20,
+                ),
+                
+              ],
+            ),
           ),
         ),
       ),

@@ -106,10 +106,17 @@ class _TransitPageState extends State<TransitPage> {
                               shrinkWrap: true,
                               itemCount: thisOrder?.length,
                               itemBuilder: (context, index) {
+                                 var dt3 =
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                            int.parse(thisOrder![index]
+                                                ['postTime']));
+                                    var TAS3 =
+                                        DateFormat('dd/MM/yyyy').format(dt3);
                                 return Container(
                                   margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
                                   child: Column(
                                     children: [
+                                      Text('Date: ${TAS3}',style: TextStyle(color: Colors.white),),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,

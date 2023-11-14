@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:newama2/general/dashboard.dart';
 import 'package:newama2/general/order.dart';
 import 'package:newama2/general/orderView.dart';
@@ -139,10 +140,18 @@ class _DispatchPageState extends State<DispatchPage> {
                               shrinkWrap: true,
                               itemCount: thisOrder?.length,
                               itemBuilder: (context, index) {
+                                 var dt3 =
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                            int.parse(thisOrder![index]
+                                                ['postTime']));
+                                    var TAS3 =
+                                        DateFormat('dd/MM/yyyy').format(dt3);
                                 return Container(
                                   margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
                                   child: Column(
                                     children: [
+
+                                      Text('Date: ${TAS3}',style: TextStyle(color: Colors.white),),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,

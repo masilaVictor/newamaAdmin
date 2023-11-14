@@ -11,9 +11,16 @@ import 'package:newama2/general/dispatch.dart';
 import 'package:newama2/general/dispatchOrders.dart';
 import 'package:newama2/general/neworders.dart';
 import 'package:newama2/general/order.dart';
+import 'package:newama2/general/ordersCancelled.dart';
+import 'package:newama2/general/ordersDate.dart';
+import 'package:newama2/general/ordersDelivered.dart';
+import 'package:newama2/general/ordersDispatch.dart';
+import 'package:newama2/general/ordersPending.dart';
+import 'package:newama2/general/ordersTransit.dart';
 import 'package:newama2/general/returned.dart';
 import 'package:newama2/general/transit.dart';
 import 'package:newama2/general/transitOrders.dart';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -205,7 +212,9 @@ class _DashboardState extends State<Dashboard> {
                             width: 116,
                             height: 56,
                             child: GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => NewOrders()));
+                              },
                               child: Column(
                                 children: [
                                   Icon(Icons.store, color: Colors.white),
@@ -235,7 +244,9 @@ class _DashboardState extends State<Dashboard> {
                             width: 116,
                             height: 56,
                             child: GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                 Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersDelivered()));
+                              },
                               child: Column(
                                 children: [
                                   Icon(Icons.motorcycle_outlined,
@@ -305,7 +316,9 @@ class _DashboardState extends State<Dashboard> {
                             width: 116,
                             height: 56,
                             child: GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersCancelled()));
+                              },
                               child: Column(
                                 children: [
                                   Icon(Icons.backspace_sharp,
@@ -455,7 +468,7 @@ class _DashboardState extends State<Dashboard> {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => NewOrders()));
+                                            builder: (context) => OrdersPending()));
                                   },
                                   child: Row(
                                     children: [
@@ -592,7 +605,7 @@ class _DashboardState extends State<Dashboard> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              DispatchOrders()));
+                                              OrdersDispatch()));
                                 },
                                 child: Row(
                                   children: [
@@ -727,7 +740,7 @@ class _DashboardState extends State<Dashboard> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              TransitOrders()));
+                                              OrdersTransit()));
                                 },
                                 child: Row(
                                   children: [

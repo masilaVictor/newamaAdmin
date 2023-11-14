@@ -27,7 +27,7 @@ class _NewOrdersState extends State<NewOrders> {
 
   getPendingOrders() async {
     final response1 = await http
-        .get(Uri.parse("http://api.newamadelivery.co.ke/pendingOrders.php"));
+        .get(Uri.parse("http://api.newamadelivery.co.ke/allOrders.php"));
     setState(() {
       pendingOrders = json.decode(response1.body);
       isLoaded = true;
@@ -47,7 +47,7 @@ class _NewOrdersState extends State<NewOrders> {
     var TAS2 = DateFormat('dd/MM/yyyy').format(dt2);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('New Orders'),
+        title: Text(TAS2),
         backgroundColor: Color.fromARGB(255, 35, 40, 44),
         automaticallyImplyLeading: false,
         leading: IconButton(
@@ -73,41 +73,45 @@ class _NewOrdersState extends State<NewOrders> {
                     var dt3 = DateTime.fromMillisecondsSinceEpoch(
                         int.parse(pendingOrders![index]['postTime']));
                     var TAS3 = DateFormat('dd/MM/yyyy').format(dt3);
-                    return Container(
-                      margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                      padding: EdgeInsets.fromLTRB(5, 20, 5, 20),
-                      decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 35, 40, 44),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => OrderPage(
-                                      orderno: pendingOrders![index]['orderID'],
-                                      outlet: pendingOrders![index]['outlet'],
-                                      status: pendingOrders![index]
-                                          ['status'])));
-                        },
-                        child: Column(
-                          children: [
-                            Text(
-                              'Order No. - ${pendingOrders![index]['orderID']} - ${pendingOrders![index]['outlet']}',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              'Date: $TAS3',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 15),
-                            )
-                          ],
+
+                    if (pendingOrders![index]['orderID'] == 'mondaytest') {
+                      return Container(
+                        margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                        padding: EdgeInsets.fromLTRB(5, 20, 5, 20),
+                        decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 35, 40, 44),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => OrderPage(
+                                        orderno: pendingOrders![index]
+                                            ['orderID'],
+                                        outlet: pendingOrders![index]['outlet'],
+                                        status: pendingOrders![index]
+                                            ['status'])));
+                          },
+                          child: Column(
+                            children: [
+                              Text(
+                                'Order No. - ${pendingOrders![index]['orderID']} - ${pendingOrders![index]['outlet']}',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                'Date: $TAS3',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    }
                   },
                 ),
                 replacement: CircularProgressIndicator(),

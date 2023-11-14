@@ -382,7 +382,13 @@ class _DashboardState extends State<Dashboard> {
                                   Text('Status',
                                       style: TextStyle(
                                           fontWeight: FontWeight.w500)),
+                                  Text('Date',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500)),
                                 ],
+                              ),
+                              const SizedBox(
+                                height: 20,
                               ),
                               Visibility(
                                 visible: isLoaded,
@@ -391,82 +397,14 @@ class _DashboardState extends State<Dashboard> {
                                   shrinkWrap: true,
                                   itemCount: pendingOrders?.length,
                                   itemBuilder: (context, index) {
+                                    var dt3 =
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                            int.parse(pendingOrders![index]
+                                                ['postTime']));
+                                    var TAS3 =
+                                        DateFormat('dd/MM/yyyy').format(dt3);
                                     return GestureDetector(
                                         onTap: () {
-                                          // showDialog(
-                                          //     context: context,
-                                          //     builder: (context) {
-                                          //       return AlertDialog(
-                                          //         title: Text(
-                                          //             'Order No: ${pendingOrders![index]['orderID']}'),
-                                          //         actions: [
-                                          //           Container(
-                                          //             child: Row(
-                                          //               mainAxisAlignment:
-                                          //                   MainAxisAlignment
-                                          //                       .spaceBetween,
-                                          //               children: [
-                                          //                 Column(
-                                          //                   crossAxisAlignment:
-                                          //                       CrossAxisAlignment
-                                          //                           .start,
-                                          //                   children: [
-                                          //                     Text(
-                                          //                         'Customer: ${pendingOrders![index]['customer']}'),
-                                          //                     const SizedBox(
-                                          //                       height: 10,
-                                          //                     ),
-                                          //                     Text(
-                                          //                         'Contacts: ${pendingOrders![index]['contacts']}'),
-                                          //                     const SizedBox(
-                                          //                       height: 10,
-                                          //                     ),
-                                          //                     Text(
-                                          //                         'Area: ${pendingOrders![index]['area']}'),
-                                          //                     const SizedBox(
-                                          //                       height: 10,
-                                          //                     ),
-                                          //                     Text(
-                                          //                         'Landmark: ${pendingOrders![index]['landmark']}'),
-                                          //                     Row(
-                                          //                       children: [
-                                          //                         SizedBox(
-                                          //                           width: 270,
-                                          //                           child: DropdownButton(
-                                          //                               value: selectedRider,
-                                          //                               hint: Text('Assign Rider*'),
-                                          //                               items: Riders.map((e) {
-                                          //                                 return DropdownMenuItem(
-                                          //                                   child:
-                                          //                                       SizedBox(width: 220, child: Text('${e["ridername"]} - ${e["phone"]} ')),
-                                          //                                   value:
-                                          //                                       e["phone"],
-                                          //                                 );
-                                          //                               }).toList(),
-                                          //                               onChanged: (value) {
-                                          //                                 setState(
-                                          //                                     () {
-                                          //                                   selectedRider =
-                                          //                                       'mas';
-                                          //                                 });
-                                          //                               }),
-                                          //                         ),
-                                          //                       ],
-                                          //                     )
-                                          //                   ],
-                                          //                 ),
-                                          //               ],
-                                          //             ),
-                                          //           ),
-                                          //           ElevatedButton(
-                                          //               onPressed: () {
-                                          //                 Navigator.pop(
-                                          //                     context);
-                                          //               },
-                                          //               child: Text('okay'))
-                                          //         ],
-                                          //       );
-                                          //     });
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
@@ -497,7 +435,8 @@ class _DashboardState extends State<Dashboard> {
                                                 Text(
                                                     '${pendingOrders![index]['outlet']}'),
                                                 Text(
-                                                    '${pendingOrders![index]['status']}')
+                                                    '${pendingOrders![index]['status']}'),
+                                                Text(TAS3)
                                               ],
                                             ),
                                             const SizedBox(
@@ -577,6 +516,9 @@ class _DashboardState extends State<Dashboard> {
                                   Text('Status',
                                       style: TextStyle(
                                           fontWeight: FontWeight.w500)),
+                                  Text('Date',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500)),
                                 ],
                               ),
                               const SizedBox(
@@ -589,6 +531,12 @@ class _DashboardState extends State<Dashboard> {
                                   shrinkWrap: true,
                                   itemCount: processingOrders?.length,
                                   itemBuilder: (context, index) {
+                                    var dt4 =
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                            int.parse(processingOrders![index]
+                                                ['postTime']));
+                                    var TAS4 =
+                                        DateFormat('dd/MM/yyyy').format(dt4);
                                     return GestureDetector(
                                         onTap: () {
                                           Navigator.push(
@@ -625,7 +573,8 @@ class _DashboardState extends State<Dashboard> {
                                                 Text(
                                                     '${processingOrders![index]['outlet']}'),
                                                 Text(
-                                                    '${processingOrders![index]['status']}')
+                                                    '${processingOrders![index]['status']}'),
+                                                Text(TAS4)
                                               ],
                                             ),
                                             const SizedBox(
@@ -703,6 +652,9 @@ class _DashboardState extends State<Dashboard> {
                                   Text('Status',
                                       style: TextStyle(
                                           fontWeight: FontWeight.w500)),
+                                  Text('Date',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500)),
                                 ],
                               ),
                               const SizedBox(
@@ -715,6 +667,12 @@ class _DashboardState extends State<Dashboard> {
                                   shrinkWrap: true,
                                   itemCount: transitOrders?.length,
                                   itemBuilder: (context, index) {
+                                    var dt5 =
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                            int.parse(transitOrders![index]
+                                                ['postTime']));
+                                    var TAS5 =
+                                        DateFormat('dd/MM/yyyy').format(dt5);
                                     return GestureDetector(
                                         onTap: () {
                                           Navigator.push(
@@ -750,7 +708,8 @@ class _DashboardState extends State<Dashboard> {
                                                 Text(
                                                     '${transitOrders![index]['outlet']}'),
                                                 Text(
-                                                    '${transitOrders![index]['status']}')
+                                                    '${transitOrders![index]['status']}'),
+                                                Text(TAS5)
                                               ],
                                             ),
                                             const SizedBox(

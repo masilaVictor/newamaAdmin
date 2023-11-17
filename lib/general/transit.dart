@@ -65,6 +65,23 @@ class _TransitPageState extends State<TransitPage> {
     }
   }
 
+
+  Future<void> returnThisOrder() async {
+    try {
+      final result1 = await http.post(
+          Uri.parse("http://api.newamadelivery.co.ke/cancelOrder.php"),
+          body: {"orderId": orderno, "status": "Returned"});
+      var response2 = jsonDecode(result1.body);
+      if (response2["success"] == "true") {
+        print("Order has been returned");
+      } else {
+        print("Some issue occured");
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Query dbRef1 = FirebaseDatabase.instance
@@ -256,31 +273,65 @@ class _TransitPageState extends State<TransitPage> {
                 const SizedBox(
                   height: 20,
                 ),
-                ElevatedButton(
-                    onPressed: () {
-                      cancelThisOrder();
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Order Cancelled'),
-                              content:
-                                  Text('Order ${orderno} has been Cancelled!'),
-                              actions: [
-                                ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const Dashboard()));
-                                    },
-                                    child: Text('Back'))
-                              ],
-                            );
-                          });
-                    },
-                    child: const Text('Cancel Order'))
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                        onPressed: () {
+                          cancelThisOrder();
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('Order Cancelled'),
+                                  content:
+                                      Text('Order ${orderno} has been Cancelled!'),
+                                  actions: [
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const Dashboard()));
+                                        },
+                                        child: Text('Back'))
+                                  ],
+                                );
+                              });
+                        },
+                        child: const Text('Cancel Order')),
+
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue
+                          ),
+                        onPressed: () {
+                          returnThisOrder();
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('Order Returned'),
+                                  content:
+                                      Text('Order ${orderno} has been Returned!'),
+                                  actions: [
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const Dashboard()));
+                                        },
+                                        child: Text('Back'))
+                                  ],
+                                );
+                              });
+                        },
+                        child: const Text('Return Order')),
+                  ],
+                )
               ],
             ),
           ),

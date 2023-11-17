@@ -16,6 +16,7 @@ import 'package:newama2/general/ordersDate.dart';
 import 'package:newama2/general/ordersDelivered.dart';
 import 'package:newama2/general/ordersDispatch.dart';
 import 'package:newama2/general/ordersPending.dart';
+import 'package:newama2/general/ordersReturned.dart';
 import 'package:newama2/general/ordersTransit.dart';
 import 'package:newama2/general/returned.dart';
 import 'package:newama2/general/transit.dart';
@@ -46,6 +47,7 @@ class _DashboardState extends State<Dashboard> {
   List ordersAll = [];
   List allDelivered = [];
   List allCancelled = [];
+  List allReturned = [];
   String? selectedRider;
 
   List Riders = [];
@@ -60,6 +62,7 @@ class _DashboardState extends State<Dashboard> {
     getallDeliveredOrders();
     getallCancelledOrders();
     getRider();
+    getReturnedOrders();
   }
 
   getRider() async {
@@ -117,6 +120,16 @@ class _DashboardState extends State<Dashboard> {
     return processingOrders;
   }
 
+  getReturnedOrders() async {
+    final response1 = await http
+        .get(Uri.parse("http://api.newamadelivery.co.ke/returnedOrders.php"));
+    setState(() {
+      allReturned = json.decode(response1.body);
+      
+    });
+    return processingOrders;
+  }
+
   getTransitOrders() async {
     final response1 = await http
         .get(Uri.parse("http://api.newamadelivery.co.ke/transitOrders.php"));
@@ -137,6 +150,9 @@ class _DashboardState extends State<Dashboard> {
 
     int canc = allCancelled.length;
     var canLen = canc.toString();
+
+    int ret = allReturned.length;
+    var retLen = ret.toString();
 
     var dt4 = DateTime.fromMillisecondsSinceEpoch(
         DateTime.now().millisecondsSinceEpoch);
@@ -285,7 +301,9 @@ class _DashboardState extends State<Dashboard> {
                             width: 116,
                             height: 56,
                             child: GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersReturned()));
+                              },
                               child: Column(
                                 children: [
                                   Icon(Icons.arrow_back_sharp,
@@ -297,7 +315,7 @@ class _DashboardState extends State<Dashboard> {
                                         color: Colors.white),
                                   ),
                                   Text(
-                                    'Total: 0',
+                                    'Total: ${retLen}',
                                     style: TextStyle(
                                         fontWeight: FontWeight.w500,
                                         color: Colors.white),

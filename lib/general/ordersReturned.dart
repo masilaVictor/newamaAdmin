@@ -3,24 +3,29 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:newama2/general/dashboard.dart';
+import 'package:newama2/general/deli.dart';
 import 'package:newama2/general/order.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class OrdersPending extends StatefulWidget {
-  const OrdersPending({super.key,this.restorationId});
+class OrdersReturned extends StatefulWidget {
+  const OrdersReturned({super.key,this.restorationId});
   final String? restorationId;
 
   @override
-  State<OrdersPending> createState() => _OrdersPendingState();
+  State<OrdersReturned> createState() => _OrdersReturnedState();
 }
 
-class _OrdersPendingState extends State<OrdersPending> with RestorationMixin {
-  String? get restorationId => widget.restorationId;
-  var Thistime =((DateTime.now().millisecondsSinceEpoch) - 86400000);
+class _OrdersReturnedState extends State<OrdersReturned>with RestorationMixin {
+   String? get restorationId => widget.restorationId;
+  late var dt2 = DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch);
+  late var TAS2 = DateFormat('dd/MM/yyyy').format(dt2);
+  late var dateTimeFormat = DateFormat('dd/MM/yyyy', 'en_US').parse(TAS2);
+  late var Thistime = dateTimeFormat.millisecondsSinceEpoch;
+
   final RestorableDateTime _selectedDate =
       RestorableDateTime(DateTime.fromMillisecondsSinceEpoch(
-        (DateTime.now().millisecondsSinceEpoch) - 86400000));
+        DateTime.now().millisecondsSinceEpoch));
   late final RestorableRouteFuture<DateTime?> _restorableDatePickerRouteFuture =
       RestorableRouteFuture<DateTime?>(
     onComplete: _selectDate,
@@ -76,7 +81,7 @@ class _OrdersPendingState extends State<OrdersPending> with RestorationMixin {
 
   getPendingOrders() async {
     final response1 = await http
-        .get(Uri.parse("http://api.newamadelivery.co.ke/pendingByDay.php?startDate=${Thistime.toString()}"));
+        .get(Uri.parse("http://api.newamadelivery.co.ke/returnByDay.php?startDate=${Thistime.toString()}"));
     setState(() {
       pendingOrders = json.decode(response1.body);
       isLoaded = true;
@@ -93,7 +98,7 @@ class _OrdersPendingState extends State<OrdersPending> with RestorationMixin {
   }
   @override
   Widget build(BuildContext context) {
-   var dt2 = DateTime.fromMillisecondsSinceEpoch(
+    var dt2 = DateTime.fromMillisecondsSinceEpoch(
         _selectedDate.value.millisecondsSinceEpoch);
     var TAS2 = DateFormat('dd/MM/yyyy').format(dt2);
 
@@ -142,7 +147,7 @@ class _OrdersPendingState extends State<OrdersPending> with RestorationMixin {
                         margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                         padding: EdgeInsets.fromLTRB(5, 20, 5, 20),
                         decoration: BoxDecoration(
-                              color:pendingOrders![index]['status'] == 'Pending'
+                              color:pendingOrders![index]['status'] == 'Cancelled'
                                   ? Color.fromARGB(255, 255, 17, 0)
                                   : pendingOrders![index]['status'] == 'Processing'
                                       ? const Color.fromARGB(255, 0, 45, 82)
@@ -156,14 +161,13 @@ class _OrdersPendingState extends State<OrdersPending> with RestorationMixin {
                         child: GestureDetector(
                           onTap: () {
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => OrderPage(
-                                        orderno: pendingOrders![index]
-                                            ['orderID'],
-                                        outlet: pendingOrders![index]['outlet'],
-                                        status: pendingOrders![index]
-                                            ['status'])));
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => DeliPage(
+                                              orderno: pendingOrders![index]['orderID'] ,
+                                              outlet: pendingOrders![index]['outlet'] ,
+                                              rider: pendingOrders![index]['rider'] ,
+                                              status: pendingOrders![index]['status'] )));
                           },
                           child: Column(
                             children: [
@@ -195,4 +199,3 @@ class _OrdersPendingState extends State<OrdersPending> with RestorationMixin {
     );
   }
   }
-

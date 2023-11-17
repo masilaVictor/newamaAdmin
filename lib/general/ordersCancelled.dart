@@ -18,10 +18,14 @@ class OrdersCancelled extends StatefulWidget {
 
 class _OrdersCancelledState extends State<OrdersCancelled> with RestorationMixin {
    String? get restorationId => widget.restorationId;
-  var Thistime =((DateTime.now().millisecondsSinceEpoch) - 86400000);
+  late var dt2 = DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch);
+  late var TAS2 = DateFormat('dd/MM/yyyy').format(dt2);
+  late var dateTimeFormat = DateFormat('dd/MM/yyyy', 'en_US').parse(TAS2);
+  late var Thistime = dateTimeFormat.millisecondsSinceEpoch;
+
   final RestorableDateTime _selectedDate =
       RestorableDateTime(DateTime.fromMillisecondsSinceEpoch(
-        (DateTime.now().millisecondsSinceEpoch) - 86400000));
+        DateTime.now().millisecondsSinceEpoch));
   late final RestorableRouteFuture<DateTime?> _restorableDatePickerRouteFuture =
       RestorableRouteFuture<DateTime?>(
     onComplete: _selectDate,
@@ -130,7 +134,7 @@ class _OrdersCancelledState extends State<OrdersCancelled> with RestorationMixin
               Visibility(
                 visible: isLoaded,
                 child: ListView.builder(
-                  scrollDirection: Axis.vertical,
+                  physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: pendingOrders?.length,
                   itemBuilder: (context, index) {
